@@ -56,7 +56,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 1eee3b038d846456b84c415627892c52, type: 3}
-    totalSpriteSurfaceArea: 7453135
+    totalSpriteSurfaceArea: 7460577
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -80,6 +80,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 44dd7b11a83bf4605916ad96f6ce3881, type: 3}
   - {fileID: 21300000, guid: 3354932168610498ebc347e78ae840d7, type: 3}
   - {fileID: 21300000, guid: 38dc6a210cae34a439bd286f6c382165, type: 3}
+  - {fileID: 21300000, guid: 89338241209cd8c43913e3b54862a50a, type: 3}
   - {fileID: 21300000, guid: e8a30441514b5499ea02a9e5a4617028, type: 3}
   - {fileID: 21300000, guid: 4b1c9751d9ed642a190d2431fa02b5f8, type: 3}
   - {fileID: 21300000, guid: 35d9dd519b2dd8a47a6f251b25fded0f, type: 3}
@@ -95,6 +96,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2f8d6212d390e424ba86746c7be53eba, type: 3}
   - {fileID: 21300000, guid: 400fa122300374d5c9492754b211336f, type: 3}
   - {fileID: 21300000, guid: 39177232480c9442b9c785ef3c94a093, type: 3}
+  - {fileID: 21300000, guid: e997a262a6d11e94897653aa71bd91ca, type: 3}
   - {fileID: 21300000, guid: e0b16592248644670b24222cef732ed0, type: 3}
   - {fileID: 21300000, guid: b3a558a257e4f4f988f0f1b57a559485, type: 3}
   - {fileID: 21300000, guid: aa3440b27b8b9423f9821f663863c0c0, type: 3}
@@ -313,6 +315,7 @@ SpriteAtlas:
   - MenuButton
   - DownloadIconOutline
   - ContainerShadowRadiusFour
+  - ParticleSmoke
   - NFTStarContainer
   - ContainerRadius6
   - VoiceChatCross
@@ -328,6 +331,7 @@ SpriteAtlas:
   - Ellipse64
   - ContainerRadius4
   - HideBarIcon
+  - ParticleSparkle
   - NFTUniqueContainer
   - RoundedSquare20x20
   - ExpandIcon
