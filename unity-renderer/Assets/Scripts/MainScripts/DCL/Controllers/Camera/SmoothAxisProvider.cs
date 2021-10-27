@@ -24,9 +24,6 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
             new InputSpikeFixer(() => Cursor.lockState),
             new InputSpikeFixer(() => Cursor.lockState)
         };
-        
-        GetComponent<CinemachineFreeLook>().m_XAxis.SetInputAxisProvider(0, this);
-        GetComponent<CinemachineFreeLook>().m_YAxis.SetInputAxisProvider(1, this);
     }
     void Update()
     {

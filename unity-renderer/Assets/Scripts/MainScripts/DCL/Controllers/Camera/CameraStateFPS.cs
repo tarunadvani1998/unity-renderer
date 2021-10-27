@@ -1,3 +1,4 @@
+using System.Collections;
 using Cinemachine;
 using UnityEngine;
 
@@ -55,15 +56,23 @@ namespace DCL.Camera
         {
             base.OnBlock(blocked);
 
+            StartCoroutine(EnableOrDisableCameraAfterFewFrames(!blocked));
+        }
+        
+        private IEnumerator EnableOrDisableCameraAfterFewFrames(bool enabled)
+        {
+            for (var frames = 0; frames < 5; frames++)
+                yield return null;
+            
             if (pov != null)
             {
-                if (blocked)
+                if (!enabled)
                 {
                     // Before block the virtual camera, we make the main camera point to the same point as the virtual one.
                     defaultVirtualCamera.transform.rotation = Quaternion.Euler(pov.m_VerticalAxis.Value, pov.m_HorizontalAxis.Value, 0f);
                 }
 
-                pov.enabled = !blocked;
+                pov.enabled = enabled;
 
                 // NOTE(Santi): After modify the 'CinemachinePOV.enabled' parameter, the only (and not very elegant) way that Cinemachine
                 //              offers to force the update is deactivating and re-activating the virtual camera.

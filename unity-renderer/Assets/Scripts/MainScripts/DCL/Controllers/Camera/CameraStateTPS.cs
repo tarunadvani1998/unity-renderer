@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Cinemachine;
 using UnityEngine;
 
@@ -183,7 +184,14 @@ namespace DCL.Camera
         public override void OnBlock(bool blocked)
         {
             base.OnBlock(blocked);
-            defaultVirtualCameraAsFreeLook.enabled = !blocked;
+            StartCoroutine(EnableOrDisableCameraAfterFewFrames(!blocked));
+        }
+
+        private IEnumerator EnableOrDisableCameraAfterFewFrames(bool enabled)
+        {
+            for (var frames = 0; frames < 5; frames++)
+                yield return null;
+            defaultVirtualCameraAsFreeLook.enabled = enabled;
         }
     }
 }
