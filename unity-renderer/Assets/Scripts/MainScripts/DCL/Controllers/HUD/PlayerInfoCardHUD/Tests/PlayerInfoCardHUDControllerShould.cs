@@ -31,7 +31,7 @@ public class PlayerInfoCardHUDControllerShould : IntegrationTestSuite_Legacy
 
         userProfileCatalog.Add(USER_ID, viewingUserProfile);
 
-        var currentPlayerIdData = Resources.Load<StringVariable>("CurrentPlayerInfoCardId");
+        var currentPlayerIdData = ScriptableObject.CreateInstance<StringVariable>();
         currentPlayerIdData.Set(USER_ID);
 
         userProfileBridge = Substitute.For<IUserProfileBridge>();
@@ -46,11 +46,10 @@ public class PlayerInfoCardHUDControllerShould : IntegrationTestSuite_Legacy
         friendsController = new FriendsController_Mock();
 
         controller = new PlayerInfoCardHUDController(friendsController,
-            UserProfileController.i,
             userProfileCatalog,
             currentPlayerIdData,
             userProfileBridge,
-            new CatalogControllerBridge(),
+            wearableCatalogBridge,
             profanityFilter,
             dataStore);
     }
@@ -105,7 +104,6 @@ public class PlayerInfoCardHUDControllerShould : IntegrationTestSuite_Legacy
     }
 
     [Test]
-    [Ignore("flaky test: workaround using production classes")]
     public void ShowWearables()
     {
         Assert.AreEqual(viewingUserProfile.inventory.Count, controller.view.playerInfoCollectibles.Count);
