@@ -309,7 +309,8 @@ namespace DCL
             }
 
 #if UNITY_EDITOR
-            DrawDebugSkeleton(bones);
+            if (VERBOSE)
+                DrawDebugSkeleton(bones);
 #endif
         }
 

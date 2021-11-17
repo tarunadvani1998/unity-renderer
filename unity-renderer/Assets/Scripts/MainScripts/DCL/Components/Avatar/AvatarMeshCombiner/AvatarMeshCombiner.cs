@@ -152,8 +152,6 @@ namespace DCL
                 finalMesh.SetSubMeshes(subMeshDescriptors);
             }
 
-            finalMesh.Optimize();
-
             result.mesh = finalMesh;
             result.materials = flattenedMaterialsData.materials;
             result.isValid = true;
