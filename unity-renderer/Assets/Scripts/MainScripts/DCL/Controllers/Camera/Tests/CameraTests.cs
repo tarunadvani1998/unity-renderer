@@ -35,6 +35,7 @@ namespace CameraController_Test
         [TestCase(-1, 0, 0)]
         [TestCase(0, 0, -1)]
         [TestCase(-1, 0, -1)]
+        [Ignore("camera flick test")]
         public void ReactToSetRotation(float lookAtX, float lookAtY, float lookAtZ)
         {
             var payload = new DCL.Camera.CameraController.SetRotationPayload()
