@@ -109,7 +109,7 @@ namespace DCL.Camera
 
         public override void OnUpdate()
         {
-            /*defaultVirtualCameraAsFreeLook.m_BindingMode = CinemachineTransposer.BindingMode.WorldSpace;
+            defaultVirtualCameraAsFreeLook.m_BindingMode = CinemachineTransposer.BindingMode.WorldSpace;
 
             bool didHit = DCLCharacterController.i.CastGroundCheckingRays(20, 0.1f, out RaycastHit hitInfo);
 
@@ -117,7 +117,7 @@ namespace DCL.Camera
             cameraDampOnGroundType.Update(didHit, hitInfo);
             cameraFreefall.Update(didHit, hitInfo);
 
-            UpdateAvatarRotationDamping();*/
+            UpdateAvatarRotationDamping();
         }
 
         /// <summary>

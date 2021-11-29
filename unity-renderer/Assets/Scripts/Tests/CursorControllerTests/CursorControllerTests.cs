@@ -23,7 +23,6 @@ namespace Tests
         }
 
         [UnityTest]
-        [Ignore("camera flick test")]
         public IEnumerator OnPointerHoverFeedbackIsDisplayedCorrectly()
         {
             IDCLEntity entity;

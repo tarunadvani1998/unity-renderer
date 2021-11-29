@@ -36,22 +36,22 @@ public class FollowWithDamping : MonoBehaviour
 
     public void LateUpdate()
     {
-        if ( target == null ) return;
-
-        Vector3 myPosition = transform.position;
-        Vector3 targetPosition = target.position;
-        Vector3 finalPosition = myPosition;
-
-        currentDamping += Damper.Damp( damping - currentDamping, Vector3.one * dampingChangeSpeed, Time.deltaTime);
-        finalPosition += Damper.Damp(targetPosition - myPosition,  currentDamping, Time.deltaTime);
-
-        Transform t = this.transform;
-        t.position = finalPosition;
-        t.forward = target.forward;
+        // if ( target == null ) return;
+        //
+        // Vector3 myPosition = transform.position;
+        // Vector3 targetPosition = target.position;
+        // Vector3 finalPosition = myPosition;
+        //
+        // currentDamping += Damper.Damp( damping - currentDamping, Vector3.one * dampingChangeSpeed, Time.deltaTime);
+        // finalPosition += Damper.Damp(targetPosition - myPosition,  currentDamping, Time.deltaTime);
+        //
+        // Transform t = this.transform;
+        // t.position = finalPosition;
+        // t.forward = target.forward;
     }
 
     private void OnWorldOffsetChange(Vector3 current, Vector3 previous)
     {
-        transform.position -= current - previous;
+        // transform.position -= current - previous;
     }
 }

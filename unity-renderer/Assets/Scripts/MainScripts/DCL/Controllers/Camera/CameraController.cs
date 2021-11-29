@@ -166,8 +166,8 @@ namespace DCL.Camera
 
         public void SetRotation(string setRotationPayload)
         {
-            /*var payload = Utils.FromJsonWithNulls<SetRotationPayload>(setRotationPayload);
-            currentCameraState?.OnSetRotation(payload);*/
+            var payload = Utils.FromJsonWithNulls<SetRotationPayload>(setRotationPayload);
+            currentCameraState?.OnSetRotation(payload);
         }
 
         public void SetRotation(float x, float y, float z, Vector3? cameraTarget = null) { currentCameraState?.OnSetRotation(new SetRotationPayload() { x = x, y = y, z = z, cameraTarget = cameraTarget }); }
