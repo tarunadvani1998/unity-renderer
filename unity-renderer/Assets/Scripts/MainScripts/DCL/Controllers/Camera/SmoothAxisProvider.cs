@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
 using Cinemachine.Utility;
 using DCL.Camera;
+using DCL.Helpers;
 using UnityEngine;
 
 public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
@@ -12,6 +10,8 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
 
     private Vector3 axis = new Vector3();
     private Vector3 axisTarget = new Vector3();
+    private CursorLockMode lastCursorLockState;
+    private int framesAfterCursorUnlocked;
 
     public InputAction_Measurable axisX;
     public InputAction_Measurable axisY;
@@ -27,11 +27,22 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
     }
     void Update()
     {
+        if (Cursor.lockState == CursorLockMode.None && lastCursorLockState == CursorLockMode.Locked)
+        {
+            framesAfterCursorUnlocked++;
+            
+            if (framesAfterCursorUnlocked < 30)
+            {
+                axis = Vector3.zero;
+                return;
+            }
+        }
+            
+        lastCursorLockState = Cursor.lockState;
+        framesAfterCursorUnlocked = 0;
         axisTarget[0] = axisX.GetValue();
         axisTarget[1] = axisY.GetValue();
-        var velocity = Vector3.zero;
-        axis = Vector3.SmoothDamp(axis, axisTarget, ref velocity, Time.deltaTime);
-        //axis += Damper.Damp(axisTarget - axis, dampTime, Time.deltaTime);
+        axis += Damper.Damp(axisTarget - axis, dampTime, Time.deltaTime);
     }
 
     public float GetAxisValue(int axis)
