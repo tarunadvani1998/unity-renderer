@@ -21,9 +21,9 @@ public class OverrideCinemachineAxisInput : MonoBehaviour
 
     private void Awake()
     {
-        //cachedAxisToMeasurableActions = axisToMeasurableActions.ToDictionary(x => x.axisName, x => x.measurableAction);
-        //CinemachineCore.GetInputAxis = OverrideGetAxis;
-        //inputSpikeFixer = new InputSpikeFixer(() => Cursor.lockState);
+        cachedAxisToMeasurableActions = axisToMeasurableActions.ToDictionary(x => x.axisName, x => x.measurableAction);
+        CinemachineCore.GetInputAxis = OverrideGetAxis;
+        inputSpikeFixer = new InputSpikeFixer(() => Cursor.lockState);
     }
 
     private float OverrideGetAxis(string axisName)
