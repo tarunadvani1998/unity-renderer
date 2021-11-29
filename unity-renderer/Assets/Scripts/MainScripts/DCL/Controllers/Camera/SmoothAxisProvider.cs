@@ -27,8 +27,10 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
     }
     void Update()
     {
-        //axisTarget[0] = axisX.GetValue();
-        //axisTarget[1] = axisY.GetValue();
+        axisTarget[0] = axisX.GetValue();
+        axisTarget[1] = axisY.GetValue();
+        var velocity = Vector3.zero;
+        axis = Vector3.SmoothDamp(axis, axisTarget, ref velocity, Time.deltaTime);
         //axis += Damper.Damp(axisTarget - axis, dampTime, Time.deltaTime);
     }
 
