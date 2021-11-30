@@ -1,6 +1,7 @@
 using Cinemachine;
 using Cinemachine.Utility;
 using DCL.Camera;
+using DCL.Helpers;
 using UnityEngine;
 
 public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
@@ -9,6 +10,8 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
 
     private Vector3 axis = new Vector3();
     private Vector3 axisTarget = new Vector3();
+    private CursorLockMode lastLockState;
+    private bool wasLocked;
 
     public InputAction_Measurable axisX;
     public InputAction_Measurable axisY;
@@ -25,7 +28,13 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
 
     void Update()
     {
-        Debug.Log($"axisX: {axisX.GetValue()}, axisY: {axisY.GetValue()}");
+        if (lastLockState != Cursor.lockState)
+            Debug.Log($"lockState changed to {Cursor.lockState}");
+        if (Utils.isCursorLocked != wasLocked)
+            Debug.Log($"locked changed to {Utils.isCursorLocked}");
+        wasLocked = Utils.isCursorLocked;
+        lastLockState = Cursor.lockState;
+        Debug.Log($"lockState: {Cursor.lockState}, axisX: {axisX.GetValue()}, axisY: {axisY.GetValue()}");
         
         axisTarget[0] = axisX.GetValue();
         axisTarget[1] = axisY.GetValue();
