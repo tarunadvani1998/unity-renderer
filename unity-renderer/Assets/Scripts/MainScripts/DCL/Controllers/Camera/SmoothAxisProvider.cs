@@ -10,8 +10,6 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
 
     private Vector3 axis = new Vector3();
     private Vector3 axisTarget = new Vector3();
-    private CursorLockMode lastLockState;
-    private bool wasLocked;
 
     public InputAction_Measurable axisX;
     public InputAction_Measurable axisY;
@@ -21,15 +19,13 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
     {
         inputSpikeFixer = new[]
         {
-            new InputSpikeFixer(() => Utils.isCursorLocked ? CursorLockMode.Locked : CursorLockMode.None),
-            new InputSpikeFixer(() => Utils.isCursorLocked ? CursorLockMode.Locked : CursorLockMode.None)
+            new InputSpikeFixer(() => Cursor.lockState),
+            new InputSpikeFixer(() => Cursor.lockState)
         };
     }
 
     void Update()
     {
-        wasLocked = Utils.isCursorLocked;
-        lastLockState = Cursor.lockState;
         Debug.Log($"lockState: {Cursor.lockState}, lockStateUtils: {Utils.isCursorLocked} axisX: {axisX.GetValue()}, axisY: {axisY.GetValue()}, unityAxisX: {Input.GetAxis("Mouse X")}, unityAxisY: {Input.GetAxis("Mouse Y")}");
 
         axisTarget[0] = axisX.GetValue();

@@ -394,9 +394,9 @@ namespace DCL.Helpers
             }
             requestedUnlock = true;
 #else
+            isCursorLocked = false;
             Cursor.visible = true;
 #endif
-            isCursorLocked = false;
             Cursor.lockState = CursorLockMode.None;
 
             EventSystem.current?.SetSelectedGameObject(null);

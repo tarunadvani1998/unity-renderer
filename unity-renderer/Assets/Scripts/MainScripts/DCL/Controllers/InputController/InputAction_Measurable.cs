@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -11,9 +12,10 @@ public class InputAction_Measurable : ScriptableObject
     public event ValueChanged OnValueChanged;
 
     [SerializeField] internal DCLAction_Measurable dclAction;
-    public DCLAction_Measurable GetDCLAction() => dclAction;
-
     [SerializeField] private float currentValue = 0;
+    
+    public DCLAction_Measurable GetDCLAction() => dclAction;
+    
     public float GetValue() => currentValue;
 
     internal void RaiseOnValueChanged(float value)
@@ -29,8 +31,8 @@ public class InputAction_Measurable : ScriptableObject
 
 #if UNITY_EDITOR
 
-    [UnityEditor.CustomEditor(typeof(InputAction_Measurable), true)]
-    internal class InputAction_MeasurableEditor : UnityEditor.Editor
+    [CustomEditor(typeof(InputAction_Measurable), true)]
+    internal class InputAction_MeasurableEditor : Editor
     {
         private float changeValue = 0;
         public override void OnInspectorGUI()
