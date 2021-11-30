@@ -30,13 +30,13 @@ namespace DCL
 
         void Update()
         {
-#if !WEB_PLATFORM
+//#if !WEB_PLATFORM
             //Browser is changing this automatically
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 UnlockCursor();
             }
-#endif
+//#endif
         }
 
         public void LockCursor()

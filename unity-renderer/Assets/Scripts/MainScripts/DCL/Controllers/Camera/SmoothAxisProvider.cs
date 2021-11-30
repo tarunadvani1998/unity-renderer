@@ -21,20 +21,16 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
     {
         inputSpikeFixer = new[]
         {
-            new InputSpikeFixer(() => Cursor.lockState),
-            new InputSpikeFixer(() => Cursor.lockState)
+            new InputSpikeFixer(() => Utils.isCursorLocked ? CursorLockMode.Locked : CursorLockMode.None),
+            new InputSpikeFixer(() => Utils.isCursorLocked ? CursorLockMode.Locked : CursorLockMode.None)
         };
     }
 
     void Update()
     {
-        if (lastLockState != Cursor.lockState)
-            Debug.Log($"lockState changed to {Cursor.lockState}");
-        if (Utils.isCursorLocked != wasLocked)
-            Debug.Log($"locked changed to {Utils.isCursorLocked}");
         wasLocked = Utils.isCursorLocked;
         lastLockState = Cursor.lockState;
-        Debug.Log($"lockState: {Cursor.lockState}, axisX: {axisX.GetValue()}, axisY: {axisY.GetValue()}, unityAxisX: {Input.GetAxis("Mouse X")}, unityAxisY: {Input.GetAxis("Mouse Y")}");
+        Debug.Log($"lockState: {Cursor.lockState}, lockStateUtils: {Utils.isCursorLocked} axisX: {axisX.GetValue()}, axisY: {axisY.GetValue()}, unityAxisX: {Input.GetAxis("Mouse X")}, unityAxisY: {Input.GetAxis("Mouse Y")}");
 
         axisTarget[0] = axisX.GetValue();
         axisTarget[1] = axisY.GetValue();

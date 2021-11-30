@@ -394,9 +394,9 @@ namespace DCL.Helpers
             }
             requestedUnlock = true;
 #else
-            isCursorLocked = false;
             Cursor.visible = true;
 #endif
+            isCursorLocked = false;
             Cursor.lockState = CursorLockMode.None;
 
             EventSystem.current?.SetSelectedGameObject(null);
@@ -412,11 +412,9 @@ namespace DCL.Helpers
         // NOTE: This should come from browser's pointerlockchange callback
         public static void BrowserSetCursorState(bool locked)
         {
-            Debug.Log("browser requested cursor state change");
             if (!locked && !requestedUnlock)
             {
                 Cursor.lockState = CursorLockMode.None;
-                Debug.Log("browser request accepted, lockState set to NONE");
             }
 
             isCursorLocked = locked;
