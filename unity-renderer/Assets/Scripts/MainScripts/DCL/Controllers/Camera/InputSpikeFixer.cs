@@ -10,6 +10,7 @@ namespace DCL.Camera
 
         private CursorLockMode lastLockState;
         private bool isLockStateDirty;
+        private int framesAfterDirty;
 
         public InputSpikeFixer(Func<CursorLockMode> getLockMode)
         {
@@ -22,18 +23,20 @@ namespace DCL.Camera
             CheckLockState();
 
             float absoluteValue = Mathf.Abs(currentValue);
-            
+
             if (ShouldIgnoreInputValue(absoluteValue))
             {
-                if (IsInputValueTolerable(absoluteValue)) 
+                framesAfterDirty++;
+                if (IsInputValueTolerable(absoluteValue))
                     isLockStateDirty = false;
                 return 0;
             }
             
+            framesAfterDirty = 0;
             return currentValue;
         }
         private static bool IsInputValueTolerable(float value) { return value < INPUT_SPIKE_TOLERANCE; }
-        private bool ShouldIgnoreInputValue(float value) { return value > 0 && isLockStateDirty; }
+        private bool ShouldIgnoreInputValue(float value) { return value > 0 && isLockStateDirty && framesAfterDirty < 30; }
 
         private void CheckLockState()
         {
