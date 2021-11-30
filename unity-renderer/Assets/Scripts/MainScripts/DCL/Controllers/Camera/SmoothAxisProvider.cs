@@ -31,7 +31,7 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
     
     void Update()
     {
-        if (Cursor.lockState == CursorLockMode.Locked && lastCursorLockState == CursorLockMode.None)
+        /*if (Cursor.lockState == CursorLockMode.Locked && lastCursorLockState == CursorLockMode.None)
         {
             framesAfterCursorLock++;
             
@@ -40,12 +40,24 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
                 axis = Vector3.zero;
                 return;
             }
-        }
+        }*/
+        
+        Debug.Log($"axisX: {axisX.GetValue()}, axisY: {axisY.GetValue()}");
             
         lastCursorLockState = Cursor.lockState;
         framesAfterCursorLock = 0;
-        axisTarget[0] = fakeAxis.x;
-        axisTarget[1] = fakeAxis.y;
+        
+        if (!DCL.Helpers.Utils.isCursorLocked)
+        {
+            axisTarget[0] = 0f;
+            axisTarget[1] = 0f;
+        }
+        else
+        {
+            axisTarget[0] = fakeAxis.x;
+            axisTarget[1] = fakeAxis.y;
+        }
+        
         axis += Damper.Damp(axisTarget - axis, dampTime, Time.deltaTime);
     }
 
