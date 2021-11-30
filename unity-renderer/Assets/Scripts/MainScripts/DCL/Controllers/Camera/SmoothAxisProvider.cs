@@ -35,6 +35,7 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
         wasLocked = Utils.isCursorLocked;
         lastLockState = Cursor.lockState;
         Debug.Log($"lockState: {Cursor.lockState}, axisX: {axisX.GetValue()}, axisY: {axisY.GetValue()}");
+        Debug.Log($"unityAxisX: {Input.GetAxis("Mouse X")}, unityAxisY: {Input.GetAxis("Mouse Y")}");
         
         axisTarget[0] = axisX.GetValue();
         axisTarget[1] = axisY.GetValue();
