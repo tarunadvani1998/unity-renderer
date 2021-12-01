@@ -391,7 +391,7 @@ namespace DCL.Helpers
             if (requestedUnlock || requestedLock)
             {
                 return;
-            }`
+            }
             requestedUnlock = true;
 #else
             Cursor.visible = true;
