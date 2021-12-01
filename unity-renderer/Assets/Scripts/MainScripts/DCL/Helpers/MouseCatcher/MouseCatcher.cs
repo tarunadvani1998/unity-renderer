@@ -32,7 +32,7 @@ namespace DCL
         {
 //#if !WEB_PLATFORM
             //Browser is changing this automatically
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.K))
             {
                 Debug.Log("escape pressed");
                 UnlockCursor();
