@@ -370,9 +370,9 @@ namespace DCL.Helpers
             }
             requestedLock = true;
 #else
-            isCursorLocked = true;
             Cursor.visible = false;
 #endif
+            isCursorLocked = true;
             Cursor.lockState = CursorLockMode.Locked;
             lockedInFrame = Time.frameCount;
 
@@ -384,7 +384,7 @@ namespace DCL.Helpers
 #if WEB_PLATFORM
             //TODO(Brian): Encapsulate all this mechanism to a new MouseLockController and branch
             //             behaviour using strategy pattern instead of this.
-            if (!isCursorLocked)
+            /*if (!isCursorLocked)
             {
                 return;
             }
@@ -392,7 +392,7 @@ namespace DCL.Helpers
             {
                 return;
             }
-            requestedUnlock = true;
+            requestedUnlock = true;*/
 #else
             Cursor.visible = true;
 #endif
