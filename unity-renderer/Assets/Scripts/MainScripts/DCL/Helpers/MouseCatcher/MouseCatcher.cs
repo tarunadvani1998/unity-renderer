@@ -34,6 +34,7 @@ namespace DCL
             //Browser is changing this automatically
             if (Input.GetKeyDown(KeyCode.Escape))
             {
+                Debug.Log("escape pressed");
                 UnlockCursor();
             }
 //#endif
