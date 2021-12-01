@@ -18,6 +18,8 @@ namespace DCL
 
     public class MouseCatcher : MonoBehaviour, IMouseCatcher, IPointerDownHandler
     {
+        private bool escKeyPressed;
+    
         public bool isLocked => Utils.isCursorLocked;
         bool renderingEnabled => CommonScriptableObjects.rendererState.Get();
 
@@ -32,11 +34,15 @@ namespace DCL
         {
 //#if !WEB_PLATFORM
             //Browser is changing this automatically
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.K))
+            if (Input.GetKey(KeyCode.Escape) && !escKeyPressed)
             {
+                escKeyPressed = true;
                 Debug.Log("escape pressed");
                 UnlockCursor();
             }
+
+            if (Input.GetKeyUp(KeyCode.Escape))
+                escKeyPressed = false;
 //#endif
         }
 
