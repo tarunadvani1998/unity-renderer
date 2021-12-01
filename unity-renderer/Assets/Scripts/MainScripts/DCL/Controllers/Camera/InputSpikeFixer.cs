@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace DCL.Camera
@@ -7,14 +6,11 @@ namespace DCL.Camera
     public class InputSpikeFixer
     {
         private const float INPUT_SPIKE_TOLERANCE = 10f;
-        private const int HISTORY_SIZE = 8;
         
         private readonly Func<CursorLockMode> getLockMode;
-        private readonly float[] history = new float[HISTORY_SIZE];
         
         private CursorLockMode lastLockState;
         private bool isLockStateDirty;
-        private int currentHistoryIndex;
 
         public InputSpikeFixer(Func<CursorLockMode> getLockMode)
         {
@@ -26,10 +22,6 @@ namespace DCL.Camera
         public float GetValue(float currentValue)
         {
             CheckLockState();
-            
-            history[currentHistoryIndex] = currentValue;
-            currentHistoryIndex = (currentHistoryIndex + 1) % HISTORY_SIZE;
-            currentValue = history.Average();
 
             float absoluteValue = Mathf.Abs(currentValue);
 

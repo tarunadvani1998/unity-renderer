@@ -24,7 +24,6 @@ namespace CameraController_Test
         [TestCase(10, 10)]
         [TestCase(-10, -10)]
         [TestCase(0.5f, 0.5f)]
-        [Ignore("camera glitch tests")]
         public void NotChangeValueWhenSameLockStateIsSetTwice(float inputValue, float expectedInputValue)
         {
             var inputSpikeFixer = new InputSpikeFixer(() => CursorLockMode.Locked);
@@ -46,7 +45,6 @@ namespace CameraController_Test
         }
         
         [Test]
-        [Ignore("camera glitch tests")]
         public void ReturnZeroJustOnceWhenLockStateIsChangedAndValueIsLowerThanTolerance()
         {
             var lockState = CursorLockMode.Locked;
