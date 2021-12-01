@@ -360,14 +360,14 @@ namespace DCL.Helpers
 #if WEB_PLATFORM
             //TODO(Brian): Encapsulate all this mechanism to a new MouseLockController and branch
             //             behaviour using strategy pattern instead of this.
-            if (isCursorLocked)
+            /*if (isCursorLocked)
             {
                 return;
             }
             if (requestedUnlock || requestedLock)
             {
                 return;
-            }
+            }*/
             requestedLock = true;
 #else
             Cursor.visible = false;
@@ -391,8 +391,8 @@ namespace DCL.Helpers
             if (requestedUnlock || requestedLock)
             {
                 return;
-            }
-            requestedUnlock = true;*/
+            }*/
+            requestedUnlock = true;
 #else
             Cursor.visible = true;
 #endif
