@@ -36,7 +36,7 @@ namespace DCL.Camera
         }
         
         private static bool IsInputValueTolerable(float value) { return value < INPUT_SPIKE_TOLERANCE; }
-        private bool ShouldIgnoreInputValue(float value) { return value > 0 && isLockStateDirty; }
+        private bool ShouldIgnoreInputValue(float value) { return value > 0 && isLockStateDirty || getLockMode() == CursorLockMode.None; }
 
         private void CheckLockState()
         {

@@ -19,8 +19,8 @@ public class SmoothAxisProvider : MonoBehaviour, AxisState.IInputAxisProvider
     {
         inputSpikeFixer = new[]
         {
-            new InputSpikeFixer(() => Cursor.lockState),
-            new InputSpikeFixer(() => Cursor.lockState)
+            new InputSpikeFixer(() => Utils.isCursorLocked ? CursorLockMode.Locked : CursorLockMode.None),
+            new InputSpikeFixer(() => Utils.isCursorLocked ? CursorLockMode.Locked : CursorLockMode.None)
         };
     }
 
