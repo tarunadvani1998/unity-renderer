@@ -50,7 +50,7 @@ namespace DCL
 
             SetupPlugins();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if (UNITY_WEBGL || UNITY_STANDALONE) && !UNITY_EDITOR
             Debug.Log("DCL Unity Build Version: " + DCL.Configuration.ApplicationSettings.version);
             Debug.unityLogger.logEnabled = false;
 
