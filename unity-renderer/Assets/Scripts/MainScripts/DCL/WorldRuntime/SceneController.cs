@@ -146,6 +146,8 @@ namespace DCL
             bool res = false;
             IWorldState worldState = Environment.i.world.state;
             DebugConfig debugConfig = DataStore.i.debugConfig;
+            
+            Debug.Log($"SceneController.ProcessMessage: sceneId={sceneId}, method={method}");
 
             if (worldState.loadedScenes.TryGetValue(sceneId, out scene))
             {
@@ -542,6 +544,7 @@ namespace DCL
 
         public void LoadParcelScenesExecute(string scenePayload)
         {
+            Debug.Log($"SceneController.LoadParcelScenesExecute: {scenePayload}");
             LoadParcelScenesMessage.UnityParcelScene scene;
 
             ProfilingEvents.OnMessageDecodeStart?.Invoke(MessagingTypes.SCENE_LOAD);
@@ -597,6 +600,7 @@ namespace DCL
 
         public void UpdateParcelScenesExecute(string sceneId)
         {
+            Debug.Log($"SceneController.UpdateParcelScenesExecute: sceneId={sceneId}");
             LoadParcelScenesMessage.UnityParcelScene sceneData;
 
             ProfilingEvents.OnMessageDecodeStart?.Invoke(MessagingTypes.SCENE_UPDATE);
@@ -658,6 +662,7 @@ namespace DCL
 
         public void UnloadParcelSceneExecute(string sceneId)
         {
+            Debug.Log($"SceneController.UnloadParcelSceneExecute: sceneId={sceneId}");
             ProfilingEvents.OnMessageProcessStart?.Invoke(MessagingTypes.SCENE_DESTROY);
 
             IWorldState worldState = Environment.i.world.state;
@@ -695,6 +700,7 @@ namespace DCL
 
         public void UnloadAllScenes(bool includePersistent = false)
         {
+            Debug.Log($"SceneController.UnloadAllScenes: includePersistent={includePersistent}");
             var worldState = Environment.i.world.state;
 
             if (includePersistent)
