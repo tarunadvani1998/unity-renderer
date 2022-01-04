@@ -15,7 +15,7 @@ namespace DCL
 {
     public class SceneController : ISceneController
     {
-        public static bool VERBOSE = false;
+        public static bool VERBOSE = true;
 
         public bool enabled { get; set; } = true;
 
@@ -334,6 +334,7 @@ namespace DCL
 
         private void SendSceneMessage(string payload, bool enqueue)
         {
+            Debug.Log($"SceneController.SendSceneMessage: {payload}");
             string[] chunks = payload.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             int count = chunks.Length;
 
@@ -639,6 +640,7 @@ namespace DCL
 
         public void UnloadScene(string sceneKey)
         {
+            Debug.Log($"SceneController.UnloadScene: {sceneKey}");
             var queuedMessage = new QueuedSceneMessage()
                 { type = QueuedSceneMessage.Type.UNLOAD_PARCEL, message = sceneKey };
 
@@ -726,6 +728,7 @@ namespace DCL
 
         public void LoadParcelScenes(string decentralandSceneJSON)
         {
+            Debug.Log($"SceneController.LoadParcelScenes: {decentralandSceneJSON}");
             var queuedMessage = new QueuedSceneMessage()
             {
                 type = QueuedSceneMessage.Type.LOAD_PARCEL,
@@ -742,6 +745,7 @@ namespace DCL
 
         public void UpdateParcelScenes(string decentralandSceneJSON)
         {
+            Debug.Log($"SceneController.UpdateParcelScenes: {decentralandSceneJSON}");
             var queuedMessage = new QueuedSceneMessage()
                 { type = QueuedSceneMessage.Type.UPDATE_PARCEL, message = decentralandSceneJSON };
 
@@ -761,6 +765,7 @@ namespace DCL
 
         public void CreateGlobalScene(string json)
         {
+            Debug.Log($"SceneController.CreateGlobalScene: {json}");
 #if UNITY_EDITOR
             DebugConfig debugConfig = DataStore.i.debugConfig;
 
