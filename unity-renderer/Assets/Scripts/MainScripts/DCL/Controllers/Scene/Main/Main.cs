@@ -34,6 +34,8 @@ namespace DCL
 
             i = this;
             
+            Debug.Log("Main executed!");
+            
             Settings.CreateSharedInstance(new DefaultSettingsFactory());
 
             if (!disableSceneDependencies)
