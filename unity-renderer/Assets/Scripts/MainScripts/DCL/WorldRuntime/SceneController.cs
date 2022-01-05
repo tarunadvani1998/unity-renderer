@@ -146,8 +146,6 @@ namespace DCL
             bool res = false;
             IWorldState worldState = Environment.i.world.state;
             DebugConfig debugConfig = DataStore.i.debugConfig;
-            
-            Debug.Log($"SceneController.ProcessMessage: sceneId={sceneId}, method={method}");
 
             if (worldState.loadedScenes.TryGetValue(sceneId, out scene))
             {
@@ -334,7 +332,6 @@ namespace DCL
 
         private void SendSceneMessage(string payload, bool enqueue)
         {
-            Debug.Log($"SceneController.SendSceneMessage: {payload}");
             string[] chunks = payload.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             int count = chunks.Length;
 
