@@ -11,7 +11,7 @@ namespace DCL.Controllers
     /// </summary>
     public class SceneLifecycleHandler
     {
-        public static bool VERBOSE = false;
+        public static bool VERBOSE = true;
 
         public enum State
         {
