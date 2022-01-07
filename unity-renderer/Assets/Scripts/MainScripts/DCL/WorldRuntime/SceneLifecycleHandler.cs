@@ -86,7 +86,7 @@ namespace DCL.Controllers
 
             if (VERBOSE)
             {
-                Debug.Log($"{owner.sceneData.basePosition} Disposable objects left... {disposableNotReady.Count}");
+                Debug.Log($"{owner.sceneData.basePosition} Disposable objects left {disposableNotReady.Count}: {string.Join(",", disposableNotReady)}");
             }
 
             if (disposableNotReady.Count == 0)
