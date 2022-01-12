@@ -53,12 +53,9 @@ namespace UnityGLTF.Cache
             }
 
             // Destroy the cached materials
-            for (int i = 0; i < MaterialCache.Count; i++)
+            foreach (var materialCacheData in MaterialCache)
             {
-                if (MaterialCache[i] != null)
-                {
-                    MaterialCache[i].Unload();
-                }
+                materialCacheData.Value?.Unload();
             }
 
             // Destroy the cached animations

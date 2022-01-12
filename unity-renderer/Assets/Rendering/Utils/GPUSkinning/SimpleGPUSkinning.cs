@@ -65,11 +65,15 @@ namespace GPUSkinning
         {
             isAvatar = bone01DataUVChannel == -1;
             
-            // If we use boundaries too big, the ScenesBoundsFeedbackStyle_Simple will turn the renderer off as being outside the scene limits
-            // TODO: Try again running the skinned mesh renderer for 1 frame and getting its boundaries, now that we know
-            // that's not what fucks up the vertices on some skinned meshes (its sharing the same material with non-skinned meshes)
-            // Bounds targetBounds = new Bounds(new Vector3(0, 0, 0), new Vector3(100, 100, 100));
-            Bounds targetBounds = new Bounds(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
+            Bounds targetBounds = new Bounds(new Vector3(0, 2, 0), new Vector3(1, 3, 1));
+            if (!isAvatar)
+            {
+                // If we use boundaries too big, the ScenesBoundsFeedbackStyle_Simple will turn the renderer off as being outside the scene limits
+                // TODO: Try again running the skinned mesh renderer for 1 frame and getting its boundaries, now that we know
+                // that's not what fucks up the vertices on some skinned meshes (its sharing the same material with non-skinned meshes)
+                // Bounds targetBounds = new Bounds(new Vector3(0, 0, 0), new Vector3(100, 100, 100));
+                targetBounds = new Bounds(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
+            }
             
             if ( encodeBindPoses )
                 GPUSkinningUtils.EncodeBindPosesIntoMesh(skr, bone01DataUVChannel, bone23DataUVChannel);
@@ -120,15 +124,7 @@ namespace GPUSkinning
             }
 
             bones = skr.bones;
-            
-            if (isAvatar)
-            {
-                meshFilter.mesh.bounds = new Bounds(new Vector3(0, 2, 0), new Vector3(1, 3, 1));
-            }
-            else
-            {
-                meshFilter.mesh.bounds = targetBounds;
-            }
+            meshFilter.mesh.bounds = targetBounds;
             
             UpdateMatrices(true);
 
