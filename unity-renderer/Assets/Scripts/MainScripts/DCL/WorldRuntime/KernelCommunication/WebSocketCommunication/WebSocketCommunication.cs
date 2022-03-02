@@ -36,7 +36,7 @@ public class WebSocketCommunication : IKernelCommunication
         {
             if (withSSL)
             {
-                wssServerUrl = $"wss://localhost:{port}/";
+                wssServerUrl = $"wss://127.0.0.1:{port}/";
                 ws = new WebSocketServer(wssServerUrl)
                 {
                     SslConfiguration =
@@ -51,7 +51,7 @@ public class WebSocketCommunication : IKernelCommunication
             }
             else
             {
-                wssServerUrl = $"ws://localhost:{port}/";
+                wssServerUrl = $"ws://127.0.0.1:{port}/";
                 ws = new WebSocketServer(wssServerUrl);
             }
 
