@@ -85,6 +85,9 @@ namespace DCL
 
         public static void AddAudioClip(this DataStore_WorldObjects self, string sceneId, AudioClip clip)
         {
+            if (!self.sceneData.ContainsKey(sceneId))
+                return;
+
             // NOTE(Brian): entityId is not used here, so audio clips do not work with the ignoreOwners
             //              feature. This is done on purpose as ignoreOwners is only used by the smart item component
             //              and should be deprecated. Also, supporting this would complicate the tracking logic and
@@ -96,6 +99,9 @@ namespace DCL
 
         public static void RemoveAudioClip(this DataStore_WorldObjects self, string sceneId, AudioClip clip)
         {
+            if (!self.sceneData.ContainsKey(sceneId))
+                return;
+
             var sceneData = self.sceneData[sceneId];
             sceneData.audioClips.Remove(clip);
         }
@@ -103,6 +109,9 @@ namespace DCL
 
         public static void AddRendereable( this DataStore_WorldObjects self, string sceneId, Rendereable rendereable )
         {
+            if (!self.sceneData.ContainsKey(sceneId))
+                return;
+
             if (rendereable == null)
             {
                 logger.Log( $"Trying to add null rendereable! (id: {sceneId})");
@@ -131,6 +140,7 @@ namespace DCL
             sceneData.textures.AddRefCount(rendereable.textures);
             sceneData.renderers.Add(rendereable.renderers);
             sceneData.owners.Add(rendereable.ownerId);
+            sceneData.animationClips.AddRefCount(rendereable.animationClips);
             sceneData.triangles.Set( sceneData.triangles.Get() + rendereable.totalTriangleCount);
             sceneData.animationClipSize.Set(sceneData.animationClipSize.Get() + rendereable.animationClipSize);
             sceneData.meshDataSize.Set(sceneData.meshDataSize.Get() + rendereable.meshDataSize);
@@ -138,6 +148,9 @@ namespace DCL
 
         public static void RemoveRendereable( this DataStore_WorldObjects self, string sceneId, Rendereable rendereable )
         {
+            if (!self.sceneData.ContainsKey(sceneId))
+                return;
+
             if ( rendereable == null )
             {
                 logger.Log( $"Trying to remove null rendereable! (id: {sceneId})");
@@ -166,6 +179,7 @@ namespace DCL
             sceneData.textures.RemoveRefCount(rendereable.textures);
             sceneData.renderers.Remove(rendereable.renderers);
             sceneData.owners.Remove(rendereable.ownerId);
+            sceneData.animationClips.RemoveRefCount(rendereable.animationClips);
             sceneData.triangles.Set( sceneData.triangles.Get() - rendereable.totalTriangleCount);
             sceneData.animationClipSize.Set(sceneData.animationClipSize.Get() - rendereable.animationClipSize);
             sceneData.meshDataSize.Set(sceneData.meshDataSize.Get() - rendereable.meshDataSize);
