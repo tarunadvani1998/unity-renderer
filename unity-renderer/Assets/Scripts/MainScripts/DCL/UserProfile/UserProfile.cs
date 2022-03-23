@@ -20,7 +20,7 @@ public class UserProfile : ScriptableObject //TODO Move to base variable
     public string description => model.description;
     public string email => model.email;
     public string bodySnapshotURL => model.snapshots.body;
-    public string face256SnapshotURL => model.snapshots.face256;
+    public string face128SnapshotURL => model.snapshots.face128;
     public UserProfileModel.ParcelsWithAccess[] parcelsWithAccess => model.parcelsWithAccess;
     public List<string> blocked => model.blocked != null ? model.blocked : new List<string>();
     public List<string> muted => model.muted ?? new List<string>();
@@ -46,6 +46,7 @@ public class UserProfile : ScriptableObject //TODO Move to base variable
             model = null;
             return;
         }
+
         bool faceSnapshotDirty = model.snapshots.face256 != newModel.snapshots.face256;
         bool bodySnapshotDirty = model.snapshots.body != newModel.snapshots.body;
 
