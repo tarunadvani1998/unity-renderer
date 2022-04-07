@@ -23,7 +23,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TestCreate()
         {
-            long entityId = "e1".GetHashCode();
+            string entityId = "e1";
 
             TestUtils.CreateSceneEntity(scene, entityId);
 
@@ -51,7 +51,7 @@ namespace Tests
             };
 
             TextShape textShape =
-                TestUtils.EntityComponentCreate<TextShape, TextShape.Model>(scene, scene.entities[entityId],
+                TestUtils.EntityComponentCreate<TextShape, TextShape.Model>(scene, scene.entities[entityId.GetHashCode()],
                     textShapeModel);
 
             yield return textShape.routine;
@@ -71,7 +71,7 @@ namespace Tests
             textShapeModel.value = "Hello world again!";
 
             TextShape textShape2 =
-                TestUtils.EntityComponentCreate<TextShape, TextShape.Model>(scene, scene.entities[entityId],
+                TestUtils.EntityComponentCreate<TextShape, TextShape.Model>(scene, scene.entities[entityId.GetHashCode()],
                     textShapeModel);
 
             TMProConsistencyAsserts(tmpro, textShapeModel);
@@ -96,7 +96,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TestMissingValuesGetDefaultedOnUpdate()
         {
-            long entityId = "1".GetHashCode();
+            string entityId = "1";
             TestUtils.CreateSceneEntity(scene, entityId);
 
             // 1. Create component with non-default configs
@@ -110,7 +110,7 @@ namespace Tests
             };
 
             TextShape textShapeComponent =
-                TestUtils.EntityComponentCreate<TextShape, TextShape.Model>(scene, scene.entities[entityId],
+                TestUtils.EntityComponentCreate<TextShape, TextShape.Model>(scene, scene.entities[entityId.GetHashCode()],
                     textShapeModel);
 
             yield return textShapeComponent.routine;
@@ -123,7 +123,7 @@ namespace Tests
             Assert.AreEqual(Color.red, textShapeComponent.GetModel().shadowColor);
 
             // 3. Update component with missing values
-            scene.EntityComponentUpdate(scene.entities[entityId], CLASS_ID_COMPONENT.TEXT_SHAPE,
+            scene.EntityComponentUpdate(scene.entities[entityId.GetHashCode()], CLASS_ID_COMPONENT.TEXT_SHAPE,
                 JsonUtility.ToJson(new TextShape.Model { }));
 
             yield return textShapeComponent.routine;

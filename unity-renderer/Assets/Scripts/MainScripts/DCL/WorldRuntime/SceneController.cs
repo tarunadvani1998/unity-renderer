@@ -244,7 +244,7 @@ namespace DCL
                         {
                             if (msgPayload is Protocol.EntityComponentCreateOrUpdate payload)
                             {
-                                delayedComponent = scene.EntityComponentCreateOrUpdate(payload.entityId,
+                                delayedComponent = scene.EntityComponentCreateOrUpdate(payload.entityId.GetHashCode(),
                                     (CLASS_ID_COMPONENT) payload.classId, payload.json) as IDelayedComponent;
                             }
 
@@ -294,7 +294,7 @@ namespace DCL
                     case MessagingTypes.ENTITY_DESTROY:
                         {
                             if (msgPayload is Protocol.RemoveEntity payload)
-                                scene.RemoveEntity(payload.entityId);
+                                scene.RemoveEntity(payload.entityId.GetHashCode());
 
                             break;
                         }

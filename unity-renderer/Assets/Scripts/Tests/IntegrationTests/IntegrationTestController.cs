@@ -11,7 +11,7 @@ using UnityEngine.Assertions;
 
 public class IntegrationTestController : MonoBehaviour
 {
-    long entityId = "a5f571bd-bce1-4cf8-a158-b8f3e92e4fb0".GetHashCode();
+    string entityId = "a5f571bd-bce1-4cf8-a158-b8f3e92e4fb0";
     string sceneName = "the-loaded-scene";
 
     public IEnumerator Initialize()
@@ -76,7 +76,7 @@ public class IntegrationTestController : MonoBehaviour
 
         yield return new WaitForAllMessagesProcessed();
 
-        Assert.IsTrue(scene.entities[entityId].meshRootGameObject == null, "meshGameObject must be null");
+        Assert.IsTrue(scene.entities[entityId.GetHashCode()].meshRootGameObject == null, "meshGameObject must be null");
 
         // 1st message
         TestUtils.CreateAndSetShape(scene as ParcelScene, entityId, CLASS_ID.BOX_SHAPE, "{}");

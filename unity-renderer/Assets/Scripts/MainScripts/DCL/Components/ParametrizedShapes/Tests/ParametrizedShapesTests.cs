@@ -67,7 +67,7 @@ public class ParametrizedShapesTests : IntegrationTestSuite_Legacy
     [UnityTest]
     public IEnumerator BoxShapeComponentMissingValuesGetDefaultedOnUpdate()
     {
-        long entityId = 1;
+        string entityId = "1";
         TestUtils.CreateSceneEntity(scene, entityId);
 
         // 1. Create component with non-default configs

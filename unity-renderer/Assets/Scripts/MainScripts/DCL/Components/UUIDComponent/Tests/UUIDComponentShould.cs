@@ -101,7 +101,7 @@ namespace Tests
         public IEnumerator NotCreateCollidersOnLoadingShape()
         {
             // 1. Instantiate entity and add an OnPointerDown component
-            long entityId = 2;
+            string entityId = "2";
             var entity = TestUtils.CreateSceneEntity(scene, entityId);
 
             string onPointerId = "pointerevent-1";
@@ -125,7 +125,7 @@ namespace Tests
             var pointerEventColliders = onPointerDownComponent.pointerEventHandler.eventColliders.colliders;
             Assert.IsTrue(pointerEventColliders == null || pointerEventColliders.Length == 0);
 
-            LoadWrapper gltfShape = GLTFShape.GetLoaderForEntity(scene.entities[entityId]);
+            LoadWrapper gltfShape = GLTFShape.GetLoaderForEntity(scene.entities[entityId.GetHashCode()]);
             yield return new WaitUntil(() => gltfShape.alreadyLoaded);
 
             // 4. Check if the PointerEvent colliders were created
@@ -137,7 +137,7 @@ namespace Tests
         public IEnumerator OnHoverEventComponentNotCreateCollidersOnLoadingShape()
         {
             // 1. Instantiate entity and add an OnPointerHoverEnter component
-            long entityId = 1;
+            string entityId = "2";
             var entity = TestUtils.CreateSceneEntity(scene, entityId);
 
             string onPointerId = "pointerevent-1";
@@ -161,7 +161,7 @@ namespace Tests
             var pointerEventColliders = onHoverEnterComponent.pointerEventColliders.colliders;
             Assert.IsTrue(pointerEventColliders == null || pointerEventColliders.Length == 0);
 
-            LoadWrapper gltfShape = GLTFShape.GetLoaderForEntity(scene.entities[entityId]);
+            LoadWrapper gltfShape = GLTFShape.GetLoaderForEntity(scene.entities[entityId.GetHashCode()]);
             yield return new WaitUntil(() => gltfShape.alreadyLoaded);
 
             // 4. Check if the PointerEvent colliders were created
@@ -173,7 +173,7 @@ namespace Tests
         public IEnumerator NotRecreateCollidersWhenShapeDoesntChange()
         {
             // 1. Instantiate entity and add an OnPointerDown component
-            long entityId = 1;
+            string entityId = "2";
             var entity = TestUtils.CreateSceneEntity(scene, entityId);
 
             string onPointerId = "pointerevent-1";
@@ -190,7 +190,7 @@ namespace Tests
             shapeModel.src = TestAssetsUtils.GetPath() + "/GLB/Lantern/Lantern.glb";
             var componentId = TestUtils.CreateAndSetShape(scene, entityId, DCL.Models.CLASS_ID.GLTF_SHAPE, JsonConvert.SerializeObject(shapeModel));
 
-            LoadWrapper gltfShape = GLTFShape.GetLoaderForEntity(scene.entities[entityId]);
+            LoadWrapper gltfShape = GLTFShape.GetLoaderForEntity(scene.entities[entityId.GetHashCode()]);
             yield return new WaitUntil(() => gltfShape.alreadyLoaded);
 
             var pointerEventColliders = onPointerDownComponent.pointerEventHandler.eventColliders.colliders;
@@ -209,7 +209,7 @@ namespace Tests
         public IEnumerator OnHoverEventNotRecreateCollidersWhenShapeDoesntChange()
         {
             // 1. Instantiate entity and add an OnPointerHoverEnter component
-            long entityId = 1;
+            string entityId = "2";
             var entity = TestUtils.CreateSceneEntity(scene, entityId);
 
             string onPointerId = "pointerevent-1";
@@ -226,7 +226,7 @@ namespace Tests
             shapeModel.src = TestAssetsUtils.GetPath() + "/GLB/Lantern/Lantern.glb";
             var componentId = TestUtils.CreateAndSetShape(scene, entityId, DCL.Models.CLASS_ID.GLTF_SHAPE, JsonConvert.SerializeObject(shapeModel));
 
-            LoadWrapper gltfShape = GLTFShape.GetLoaderForEntity(scene.entities[entityId]);
+            LoadWrapper gltfShape = GLTFShape.GetLoaderForEntity(scene.entities[entityId.GetHashCode()]);
             yield return new WaitUntil(() => gltfShape.alreadyLoaded);
 
             var pointerEventColliders = onHoverEnterComponent.pointerEventColliders.colliders;
@@ -245,7 +245,7 @@ namespace Tests
         public IEnumerator NotLeaveCollidersOnRecycledMeshes()
         {
             // 1. Instantiate entity and add an OnPointerDown component
-            long entityId = 1;
+            string entityId = "2";
             var entity1 = TestUtils.CreateSceneEntity(scene, entityId);
 
             string onPointerId = "pointerevent-1";
@@ -262,7 +262,7 @@ namespace Tests
             shapeModel.src = TestAssetsUtils.GetPath() + "/GLB/Lantern/Lantern.glb";
             var shapeComponentId = TestUtils.CreateAndSetShape(scene, entityId, DCL.Models.CLASS_ID.GLTF_SHAPE, JsonConvert.SerializeObject(shapeModel));
 
-            LoadWrapper gltfShapeLoader1 = GLTFShape.GetLoaderForEntity(scene.entities[entityId]);
+            LoadWrapper gltfShapeLoader1 = GLTFShape.GetLoaderForEntity(scene.entities[entityId.GetHashCode()]);
 
             yield return new WaitUntil(() => gltfShapeLoader1.alreadyLoaded);
             yield return null;
@@ -289,7 +289,7 @@ namespace Tests
         public IEnumerator OnHoverEventNotLeaveCollidersOnRecycledMeshes()
         {
             // 1. Instantiate entity and add an OnPointerHoverEnter component
-            long entityId = 1;
+            string entityId = "2";
             var entity1 = TestUtils.CreateSceneEntity(scene, entityId);
 
             string onPointerId = "pointerevent-1";
@@ -333,7 +333,7 @@ namespace Tests
         public IEnumerator UpdateParametShapeOnPointerDownCollidersMeshOnShapeUpdate()
         {
             // 1. Instantiate entity and add an OnPointerDown component
-            long entityId = 1;
+            string entityId = "2";
             var entity1 = TestUtils.CreateSceneEntity(scene, entityId);
 
             string onPointerId = "pointerevent-1";
@@ -398,7 +398,7 @@ namespace Tests
         public IEnumerator UpdateParametShapeOnPointerHoverCollidersMeshOnShapeUpdate()
         {
             // 1. Instantiate entity and add an OnPointerDown component
-            long entityId = 1;
+            string entityId = "2";
             var entity1 = TestUtils.CreateSceneEntity(scene, entityId);
 
             string onPointerId = "pointerevent-1";

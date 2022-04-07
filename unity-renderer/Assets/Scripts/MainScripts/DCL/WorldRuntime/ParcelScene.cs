@@ -15,6 +15,7 @@ namespace DCL.Controllers
     {
         public Dictionary<long, IDCLEntity> entities { get; private set; } = new Dictionary<long, IDCLEntity>();
         public Dictionary<string, ISharedComponent> disposableComponents { get; private set; } = new Dictionary<string, ISharedComponent>();
+        
         public LoadParcelScenesMessage.UnityParcelScene sceneData { get; protected set; }
 
         public HashSet<Vector2Int> parcels = new HashSet<Vector2Int>();
@@ -251,8 +252,9 @@ namespace DCL.Controllers
 
         public Transform GetSceneTransform() { return transform; }
 
-        public IDCLEntity CreateEntity(long id)
+        public IDCLEntity CreateEntity(string rawId)
         {
+            long id = rawId.GetHashCode();
             if (entities.ContainsKey(id))
             {
                 return entities[id];
@@ -288,6 +290,12 @@ namespace DCL.Controllers
             OnEntityAdded?.Invoke(newEntity);
 
             return newEntity;
+        }
+
+        public void RemoveEntity(string rawId, bool removeImmediatelyFromEntitiesList = true)
+        {
+            long id = rawId.GetHashCode();
+            RemoveEntity(id);
         }
 
         public void RemoveEntity(long id, bool removeImmediatelyFromEntitiesList = true)
@@ -388,6 +396,11 @@ namespace DCL.Controllers
 
         private void RemoveAllEntitiesImmediate() { RemoveAllEntities(instant: true); }
 
+        public void SetEntityParent(string entityId, string parentId)
+        {
+            SetEntityParent(entityId.GetHashCode(),parentId.GetHashCode());
+        }
+        
         public void SetEntityParent(long entityId, long parentId)
         {
             if (entityId == parentId)
@@ -446,9 +459,6 @@ namespace DCL.Controllers
             }
         }
 
-        /**
-          * This method is called when we need to attach a disposable component to the entity
-          */
         public void SharedComponentAttach(long entityId, string componentId)
         {
             IDCLEntity entity = GetEntityForUpdate(entityId);
@@ -460,6 +470,20 @@ namespace DCL.Controllers
             {
                 sharedComponent.AttachTo(entity);
             }
+        }
+        
+        /**
+          * This method is called when we need to attach a disposable component to the entity
+          */
+        public void SharedComponentAttach(string rawEntityId, string componentId)
+        {
+            SharedComponentAttach(rawEntityId.GetHashCode(),componentId);
+        }
+
+        public IEntityComponent EntityComponentCreateOrUpdateWithModel(string rawEntityId, CLASS_ID_COMPONENT classId, object data)
+        {
+            long entityId = rawEntityId.GetHashCode();
+            return EntityComponentCreateOrUpdateWithModel(entityId, classId, data);
         }
 
         public IEntityComponent EntityComponentCreateOrUpdateWithModel(long entityId, CLASS_ID_COMPONENT classId, object data)
@@ -524,6 +548,11 @@ namespace DCL.Controllers
             return newComponent;
         }
 
+        public IEntityComponent EntityComponentCreateOrUpdate(string entityId, CLASS_ID_COMPONENT classId, string data)
+        {
+            return EntityComponentCreateOrUpdateWithModel(entityId.GetHashCode(), classId, data);
+        }
+        
         public IEntityComponent EntityComponentCreateOrUpdate(long entityId, CLASS_ID_COMPONENT classId, string data) { return EntityComponentCreateOrUpdateWithModel(entityId, classId, data); }
 
         // The EntityComponentUpdate() parameters differ from other similar methods because there is no EntityComponentUpdate protocol message yet.
@@ -583,6 +612,11 @@ namespace DCL.Controllers
             }
         }
 
+        public void EntityComponentRemove(string rawEntityId, string name)
+        {
+            EntityComponentRemove(rawEntityId.GetHashCode(), name);
+        }
+        
         public void EntityComponentRemove(long entityId, string name)
         {
             IDCLEntity decentralandEntity = GetEntityForUpdate(entityId);
@@ -743,6 +777,12 @@ namespace DCL.Controllers
             return result;
         }
 
+        private IDCLEntity GetEntityForUpdate(string rawEntityId)
+        {
+            long entityId = rawEntityId.GetHashCode();
+            return GetEntityForUpdate(entityId);
+        }
+        
         private IDCLEntity GetEntityForUpdate(long entityId)
         {
             if (!entities.TryGetValue(entityId, out IDCLEntity entity))

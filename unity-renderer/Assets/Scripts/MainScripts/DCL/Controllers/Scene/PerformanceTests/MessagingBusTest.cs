@@ -11,13 +11,13 @@ namespace MessagingBusTest
 {
     public class MainMessagingBusTest
     {
-        private long entityId;
+        private string entityId;
         private IMessageProcessHandler messageProcessHandler;
         private MessagingBus bus;
         [SetUp]
         public void SetUp()
         {
-            entityId = 2;
+            entityId = "2";
             messageProcessHandler = Substitute.For<IMessageProcessHandler>();
             bus = new MessagingBus(MessagingBusType.SYSTEM, messageProcessHandler, new MessagingController(new MessagingControllersManager(messageProcessHandler), messageProcessHandler));
         }
