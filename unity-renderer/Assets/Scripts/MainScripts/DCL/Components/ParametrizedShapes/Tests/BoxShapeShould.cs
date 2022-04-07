@@ -23,7 +23,7 @@ public class BoxShapeShould : IntegrationTestSuite_Legacy
         string entityId = "3";
         TestUtils.InstantiateEntityWithShape(scene, entityId, DCL.Models.CLASS_ID.BOX_SHAPE, Vector3.zero);
 
-        var meshName = scene.entities[entityId].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
+        var meshName = scene.entities[entityId.GetHashCode()].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
         Assert.AreEqual("DCL Box Instance", meshName);
         yield break;
     }

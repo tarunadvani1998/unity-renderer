@@ -25,7 +25,7 @@ public class ParametrizedShapesTests : IntegrationTestSuite_Legacy
         string entityId = "1";
         TestUtils.InstantiateEntityWithShape(scene, entityId, DCL.Models.CLASS_ID.BOX_SHAPE, Vector3.zero);
 
-        var meshName = scene.entities[entityId].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
+        var meshName = scene.entities[entityId.GetHashCode()].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
         Assert.AreEqual("DCL Box Instance", meshName);
         yield break;
     }
@@ -36,7 +36,7 @@ public class ParametrizedShapesTests : IntegrationTestSuite_Legacy
         string entityId = "2";
         TestUtils.InstantiateEntityWithShape(scene, entityId, DCL.Models.CLASS_ID.SPHERE_SHAPE, Vector3.zero);
 
-        var meshName = scene.entities[entityId].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
+        var meshName = scene.entities[entityId.GetHashCode()].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
         Assert.AreEqual("DCL Sphere Instance", meshName);
         yield break;
     }
@@ -47,7 +47,7 @@ public class ParametrizedShapesTests : IntegrationTestSuite_Legacy
         string entityId = "5";
         TestUtils.InstantiateEntityWithShape(scene, entityId, DCL.Models.CLASS_ID.CYLINDER_SHAPE, Vector3.zero);
 
-        var meshName = scene.entities[entityId].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
+        var meshName = scene.entities[entityId.GetHashCode()].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
         Assert.AreEqual("DCL Cylinder Instance", meshName);
         yield break;
     }
@@ -58,7 +58,7 @@ public class ParametrizedShapesTests : IntegrationTestSuite_Legacy
         string entityId = "4";
         TestUtils.InstantiateEntityWithShape(scene, entityId, DCL.Models.CLASS_ID.CONE_SHAPE, Vector3.zero);
 
-        var meshName = scene.entities[entityId].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
+        var meshName = scene.entities[entityId.GetHashCode()].gameObject.GetComponentInChildren<MeshFilter>().mesh.name;
 
         Assert.AreEqual("DCL Cone50v0t1b2l2o Instance", meshName);
         yield break;
@@ -165,7 +165,7 @@ public class ParametrizedShapesTests : IntegrationTestSuite_Legacy
     {
         string entityId = "entityId";
         TestUtils.CreateSceneEntity(scene, entityId);
-        var entity = scene.entities[entityId];
+        var entity = scene.entities[entityId.GetHashCode()];
 
         TestUtils.SetEntityTransform(scene, entity, new DCLTransform.Model { position = new Vector3(8, 1, 8) });
 
@@ -242,7 +242,7 @@ public class ParametrizedShapesTests : IntegrationTestSuite_Legacy
     {
         string entityId = "entityId";
         TestUtils.CreateSceneEntity(scene, entityId);
-        var entity = scene.entities[entityId];
+        var entity = scene.entities[entityId.GetHashCode()];
 
         TestUtils.SetEntityTransform(scene, entity, new DCLTransform.Model { position = new Vector3(8, 1, 8) });
 

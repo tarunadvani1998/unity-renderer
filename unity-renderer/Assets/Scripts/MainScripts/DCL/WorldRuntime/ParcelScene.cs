@@ -13,7 +13,7 @@ namespace DCL.Controllers
 {
     public class ParcelScene : MonoBehaviour, IParcelScene, ISceneMessageProcessor
     {
-        public Dictionary<string, IDCLEntity> entities { get; private set; } = new Dictionary<string, IDCLEntity>();
+        public Dictionary<long, IDCLEntity> entities { get; private set; } = new Dictionary<long, IDCLEntity>();
         public Dictionary<string, ISharedComponent> disposableComponents { get; private set; } = new Dictionary<string, ISharedComponent>();
         public LoadParcelScenesMessage.UnityParcelScene sceneData { get; protected set; }
 
@@ -251,8 +251,9 @@ namespace DCL.Controllers
 
         public Transform GetSceneTransform() { return transform; }
 
-        public IDCLEntity CreateEntity(string id)
+        public IDCLEntity CreateEntity(string rawId)
         {
+            long id = rawId.GetHashCode();
             if (entities.ContainsKey(id))
             {
                 return entities[id];
@@ -290,8 +291,9 @@ namespace DCL.Controllers
             return newEntity;
         }
 
-        public void RemoveEntity(string id, bool removeImmediatelyFromEntitiesList = true)
+        public void RemoveEntity(string rawId, bool removeImmediatelyFromEntitiesList = true)
         {
+            long id = rawId.GetHashCode();
             if (entities.ContainsKey(id))
             {
                 IDCLEntity entity = entities[id];
