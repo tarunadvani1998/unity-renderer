@@ -11,71 +11,6 @@ namespace DCL.Components
 {
     public class PBRMaterial : BaseDisposable
     {
-        [System.Serializable]
-        public class Model : BaseModel
-        {
-            [Range(0f, 1f)]
-            public float alphaTest = 0.5f;
-
-            public Color albedoColor = Color.white;
-            public string albedoTexture;
-            public float metallic = 0.5f;
-            public float roughness = 0.5f;
-            public float microSurface = 1f; // Glossiness
-            public float specularIntensity = 1f;
-
-            public string alphaTexture;
-            public string emissiveTexture;
-            public Color emissiveColor = Color.black;
-            public float emissiveIntensity = 2f;
-            public Color reflectivityColor = Color.white;
-            public float directIntensity = 1f;
-            public string bumpTexture;
-            public bool castShadows = true;
-
-            [Range(0, 4)]
-            public int transparencyMode = 4; // 0: OPAQUE; 1: ALPHATEST; 2: ALPHBLEND; 3: ALPHATESTANDBLEND; 4: AUTO (Engine decide)
-
-            public override BaseModel GetDataFromJSON(string json) { return Utils.SafeFromJson<Model>(json); }
-            public override bool Equals(object obj) {
-                if (ReferenceEquals(null, obj))
-                    return false;
-                if (ReferenceEquals(this, obj))
-                    return true;
-                if (obj.GetType() != this.GetType())
-                    return false;
-                return Equals((Model) obj);
-            }
-            
-            protected bool Equals(Model other)
-            {
-                return alphaTest.Equals(other.alphaTest) && albedoColor.Equals(other.albedoColor) && albedoTexture == other.albedoTexture && metallic.Equals(other.metallic) && roughness.Equals(other.roughness) && microSurface.Equals(other.microSurface) && specularIntensity.Equals(other.specularIntensity) && alphaTexture == other.alphaTexture && emissiveTexture == other.emissiveTexture && emissiveColor.Equals(other.emissiveColor) && emissiveIntensity.Equals(other.emissiveIntensity) && reflectivityColor.Equals(other.reflectivityColor) && directIntensity.Equals(other.directIntensity) && bumpTexture == other.bumpTexture && castShadows == other.castShadows && transparencyMode == other.transparencyMode;
-            }
-            
-            public override int GetHashCode() {
-                unchecked
-                {
-                    int hashCode = alphaTest.GetHashCode();
-                    hashCode = (hashCode * 397) ^ albedoColor.GetHashCode();
-                    hashCode = (hashCode * 397) ^ (albedoTexture != null ? albedoTexture.GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ metallic.GetHashCode();
-                    hashCode = (hashCode * 397) ^ roughness.GetHashCode();
-                    hashCode = (hashCode * 397) ^ microSurface.GetHashCode();
-                    hashCode = (hashCode * 397) ^ specularIntensity.GetHashCode();
-                    hashCode = (hashCode * 397) ^ (alphaTexture != null ? alphaTexture.GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ (emissiveTexture != null ? emissiveTexture.GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ emissiveColor.GetHashCode();
-                    hashCode = (hashCode * 397) ^ emissiveIntensity.GetHashCode();
-                    hashCode = (hashCode * 397) ^ reflectivityColor.GetHashCode();
-                    hashCode = (hashCode * 397) ^ directIntensity.GetHashCode();
-                    hashCode = (hashCode * 397) ^ (bumpTexture != null ? bumpTexture.GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ castShadows.GetHashCode();
-                    hashCode = (hashCode * 397) ^ transparencyMode;
-                    return hashCode;
-                }
-            }
-        }
-
         enum TransparencyMode
         {
             OPAQUE,
@@ -96,19 +31,19 @@ namespace DCL.Components
         DCLTexture emissiveDCLTexture = null;
         DCLTexture bumpDCLTexture = null;
 
-        private Model oldModel;
+        private PBRMaterialModel oldModel;
 
         private List<Coroutine> textureFetchCoroutines = new List<Coroutine>();
 
         public PBRMaterial()
         {
-            model = new Model();
+            model = new PBRMaterialModel();
 
             OnAttach += OnMaterialAttached;
             OnDetach += OnMaterialDetached;
         }
 
-        new public Model GetModel() { return (Model) model; }
+        new public PBRMaterialModel GetModel() { return (PBRMaterialModel) model; }
 
         public override int GetClassId() { return (int) CLASS_ID.PBR_MATERIAL; }
 
@@ -125,9 +60,9 @@ namespace DCL.Components
 
         public override IEnumerator ApplyChanges(BaseModel newModel)
         {
-            Model model = (Model) newModel;
+            PBRMaterialModel model = (PBRMaterialModel) newModel;
 
-            Environment.i.serviceLocator.Get<IResourcePromiseKeeperService>().ForgetMaterial(oldModel);
+            // Environment.i.serviceLocator.Get<IResourcePromiseKeeperService>().ForgetMaterial(oldModel);
             oldModel = model;
             AsignMaterial(model);
 
@@ -138,7 +73,7 @@ namespace DCL.Components
                 InitMaterial(entity);
         }
 
-        private async void AsignMaterial(Model model)
+        private async void AsignMaterial(PBRMaterialModel model)
         {
             var wrapper = await Environment.i.serviceLocator.Get<IResourcePromiseKeeperService>().GetMaterial(model);
             material = wrapper.Get();
@@ -170,7 +105,7 @@ namespace DCL.Components
             if (meshRenderer == null)
                 return;
 
-            Model model = (Model) this.model;
+            PBRMaterialModel model = (PBRMaterialModel) this.model;
 
             meshRenderer.shadowCastingMode = model.castShadows ? ShadowCastingMode.On : ShadowCastingMode.Off;
 
@@ -230,7 +165,7 @@ namespace DCL.Components
                     CoroutineStarter.Stop(coroutine);
             }
             
-            Environment.i.serviceLocator.Get<IResourcePromiseKeeperService>().ForgetMaterial(oldModel);
+            // Environment.i.serviceLocator.Get<IResourcePromiseKeeperService>().ForgetMaterial(oldModel);
 
             base.Dispose();
         }

@@ -10,15 +10,16 @@ using System.Linq;
 
 namespace DCL
 {
-    public class DCLTexture : BaseDisposable,IDCLTexture
+    public class DCLTexture : BaseDisposable
     {
+       AssetPromise_Texture texturePromise = null;
+
         private Dictionary<ISharedComponent, HashSet<string>> attachedEntitiesByComponent =
             new Dictionary<ISharedComponent, HashSet<string>>();
 
         public TextureWrapMode unityWrap;
         public FilterMode unitySamplingMode;
-        public Texture2D texture { get; protected set; }
-        
+        public Texture2D texture;
         protected bool isDisposed;
 
         public override int GetClassId() { return (int) CLASS_ID.TEXTURE; }
@@ -63,6 +64,73 @@ namespace DCL
                 yield break;
 
             DCLTextureModel model = (DCLTextureModel) newModel;
+
+            unitySamplingMode = model.samplingMode;
+
+            switch (model.wrap)
+            {
+                case DCLTextureModel.BabylonWrapMode.CLAMP:
+                    unityWrap = TextureWrapMode.Clamp;
+                    break;
+                case DCLTextureModel.BabylonWrapMode.WRAP:
+                    unityWrap = TextureWrapMode.Repeat;
+                    break;
+                case DCLTextureModel.BabylonWrapMode.MIRROR:
+                    unityWrap = TextureWrapMode.Mirror;
+                    break;
+            }
+
+            if (texture == null && !string.IsNullOrEmpty(model.src))
+            {
+                bool isBase64 = model.src.Contains("image/png;base64");
+
+                if (isBase64)
+                {
+                    string base64Data = model.src.Substring(model.src.IndexOf(',') + 1);
+
+                    // The used texture variable can't be null for the ImageConversion.LoadImage to work
+                    if (texture == null)
+                    {
+                        texture = new Texture2D(1, 1);
+                    }
+
+                    if (!ImageConversion.LoadImage(texture, Convert.FromBase64String(base64Data)))
+                    {
+                        Debug.LogError($"DCLTexture with id {id} couldn't parse its base64 image data.");
+                    }
+
+                    if (texture != null)
+                    {
+                        texture.wrapMode = unityWrap;
+                        texture.filterMode = unitySamplingMode;
+                        texture.Compress(false);
+                        texture.Apply(unitySamplingMode != FilterMode.Point, true);
+                    }
+                }
+                else
+                {
+                    string contentsUrl = string.Empty;
+                    bool isExternalURL = model.src.Contains("http://") || model.src.Contains("https://");
+
+                    if (isExternalURL)
+                        contentsUrl = model.src;
+                    else
+                        scene.contentProvider.TryGetContentsUrl(model.src, out contentsUrl);
+
+                    if (!string.IsNullOrEmpty(contentsUrl))
+                    {
+                        if (texturePromise != null)
+                            AssetPromiseKeeper_Texture.i.Forget(texturePromise);
+
+                        texturePromise = new AssetPromise_Texture(contentsUrl, unityWrap, unitySamplingMode, storeDefaultTextureInAdvance: true);
+                        texturePromise.OnSuccessEvent += (x) => texture = x.texture;
+                        texturePromise.OnFailEvent += (x, error) => { texture = null; };
+
+                        AssetPromiseKeeper_Texture.i.Keep(texturePromise);
+                        yield return texturePromise;
+                    }
+                }
+            }
         }
 
         public virtual void AttachTo(ISharedComponent component)
@@ -113,6 +181,13 @@ namespace DCL
             {
                 RemoveReference(attachedEntitiesByComponent.First().Key);
             }
+
+            if (texturePromise != null)
+            {
+                AssetPromiseKeeper_Texture.i.Forget(texturePromise);
+                texturePromise = null;
+            }
+
             base.Dispose();
         }
     }

@@ -1,14 +1,9 @@
 {
-    "name": "ResourcePromiseKeeper",
+    "name": "DCL.Components.PBRMaterialModel",
     "rootNamespace": "",
     "references": [
-        "GUID:3ac909a9e663fbd4fbcffe071a761ac6",
-        "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:06069cbaab5a0cf45b29d87e585151ed",
-        "GUID:3b61bfe638c557d44815e0e09f59786d",
-        "GUID:69d3ad01865d78c4b8495994438c4c0b",
         "GUID:a78c5d8dad39efe45ab1b21901f8db0f",
-        "GUID:3b80b0b562b1cbc489513f09fc1b8f69"
+        "GUID:b1087c5731ff68448a0a9c625bb7e52d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

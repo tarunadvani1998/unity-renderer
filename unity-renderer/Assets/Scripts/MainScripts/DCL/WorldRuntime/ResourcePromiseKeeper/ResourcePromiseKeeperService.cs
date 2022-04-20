@@ -7,9 +7,9 @@ using UnityEngine;
 
 public interface IResourcePromiseKeeperService : IService
 {
-    UniTask<Resource_Material> GetMaterial(PBRMaterial.Model model);
+    UniTask<Resource_Material> GetMaterial(PBRMaterialModel model);
     
-    void ForgetMaterial(PBRMaterial.Model model);
+    void ForgetMaterial(PBRMaterialModel model);
 }
 
 public class ResourcePromiseKeeperService : IResourcePromiseKeeperService
@@ -35,12 +35,12 @@ public class ResourcePromiseKeeperService : IResourcePromiseKeeperService
         dclTexturePromiseKeeper.Dispose();
     }
     
-    public UniTask<Resource_Material> GetMaterial(PBRMaterial.Model model)
+    public UniTask<Resource_Material> GetMaterial(PBRMaterialModel model)
     {
         return materialPromiseKeeper.GetResource(model);
     }
     
-    public void ForgetMaterial(PBRMaterial.Model model) { materialPromiseKeeper.ForgetResource(model); }
+    public void ForgetMaterial(PBRMaterialModel model) { materialPromiseKeeper.ForgetResource(model); }
 
     public UniTask<Resource_DCLTexture> GetDCLTexture(DCLTextureModel model)
     {

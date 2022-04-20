@@ -24,7 +24,7 @@ public class PBRMaterialVisualTests : VisualTestsBase
         Vector3 camTarget = new Vector3(5, 2, 5);
         VisualTestUtils.RepositionVisualTestsCamera(camera, camTarget - new Vector3(2, -1, 2), camTarget);
 
-        PBRMaterial matPBR = TestUtils.CreateEntityWithPBRMaterial(scene, new PBRMaterial.Model
+        PBRMaterial matPBR = TestUtils.CreateEntityWithPBRMaterial(scene, new PBRMaterialModel
         {
             albedoTexture = texture.id,
             transparencyMode = 2,
@@ -76,17 +76,17 @@ public class PBRMaterialVisualTests : VisualTestsBase
         PlaneShape plane = TestUtils.CreateEntityWithPlaneShape(scene, new Vector3(5, 1, 5), true);
         IDCLEntity planeEntity = plane.attachedEntities.FirstOrDefault();
         TestUtils.SetEntityTransform(scene, planeEntity, new Vector3(5, 1, 5), Quaternion.identity, Vector3.one * 3);
-        PBRMaterial planeMaterial = TestUtils.AttachPBRMaterialToEntity(scene, planeEntity, new PBRMaterial.Model { alphaTest = 1, transparencyMode = 1, albedoColor = Vector4.one });
+        PBRMaterial planeMaterial = TestUtils.AttachPBRMaterialToEntity(scene, planeEntity, new PBRMaterialModel { alphaTest = 1, transparencyMode = 1, albedoColor = Vector4.one });
         yield return plane.routine;
         yield return planeMaterial.routine;
 
         BoxShape box1 = TestUtils.CreateEntityWithBoxShape(scene, new Vector3(4, 1, 6), true);
-        PBRMaterial box1Material = TestUtils.AttachPBRMaterialToEntity(scene, box1.attachedEntities.FirstOrDefault(), new PBRMaterial.Model { transparencyMode = 0, albedoColor = Color.blue });
+        PBRMaterial box1Material = TestUtils.AttachPBRMaterialToEntity(scene, box1.attachedEntities.FirstOrDefault(), new PBRMaterialModel { transparencyMode = 0, albedoColor = Color.blue });
         yield return box1.routine;
         yield return box1Material.routine;
 
         BoxShape box2 = TestUtils.CreateEntityWithBoxShape(scene, new Vector3(5, 1, 6.5f), true);
-        PBRMaterial box2Material = TestUtils.AttachPBRMaterialToEntity(scene, box2.attachedEntities.FirstOrDefault(), new PBRMaterial.Model { transparencyMode = 0, albedoColor = Color.red });
+        PBRMaterial box2Material = TestUtils.AttachPBRMaterialToEntity(scene, box2.attachedEntities.FirstOrDefault(), new PBRMaterialModel { transparencyMode = 0, albedoColor = Color.red });
         yield return box2.routine;
         yield return box2Material.routine;
 
@@ -123,7 +123,7 @@ public class PBRMaterialVisualTests : VisualTestsBase
         PlaneShape plane = TestUtils.CreateEntityWithPlaneShape(scene, new Vector3(5, 1, 5), true);
         IDCLEntity planeEntity = plane.attachedEntities.FirstOrDefault();
         TestUtils.SetEntityTransform(scene, planeEntity, new Vector3(5, 1, 5), Quaternion.Euler(0, 0, 180), Vector3.one * 3);
-        PBRMaterial planeMaterial = TestUtils.AttachPBRMaterialToEntity(scene, planeEntity, new PBRMaterial.Model
+        PBRMaterial planeMaterial = TestUtils.AttachPBRMaterialToEntity(scene, planeEntity, new PBRMaterialModel
         {
             albedoColor = new Color(1, 1, 1, alpha),
             transparencyMode = 2,
@@ -160,7 +160,7 @@ public class PBRMaterialVisualTests : VisualTestsBase
         PlaneShape plane = TestUtils.CreateEntityWithPlaneShape(scene, new Vector3(5, 1, 5), true);
         IDCLEntity planeEntity = plane.attachedEntities.FirstOrDefault();
         TestUtils.SetEntityTransform(scene, planeEntity, new Vector3(5, 1, 5), Quaternion.Euler(0, 0, 180), Vector3.one * 3);
-        PBRMaterial planeMaterial = TestUtils.AttachPBRMaterialToEntity(scene, planeEntity, new PBRMaterial.Model
+        PBRMaterial planeMaterial = TestUtils.AttachPBRMaterialToEntity(scene, planeEntity, new PBRMaterialModel
         {
             transparencyMode = 2,
             albedoTexture = texture.id,
@@ -200,7 +200,7 @@ public class PBRMaterialVisualTests : VisualTestsBase
         PlaneShape plane = TestUtils.CreateEntityWithPlaneShape(scene, new Vector3(5, 1, 5), true);
         IDCLEntity planeEntity = plane.attachedEntities.FirstOrDefault();
         TestUtils.SetEntityTransform(scene, planeEntity, new Vector3(5, 1, 5), Quaternion.Euler(0, 0, 180), Vector3.one * 3);
-        PBRMaterial planeMaterial = TestUtils.AttachPBRMaterialToEntity(scene, planeEntity, new PBRMaterial.Model
+        PBRMaterial planeMaterial = TestUtils.AttachPBRMaterialToEntity(scene, planeEntity, new PBRMaterialModel
         {
             transparencyMode = 2,
             albedoTexture = texture.id,

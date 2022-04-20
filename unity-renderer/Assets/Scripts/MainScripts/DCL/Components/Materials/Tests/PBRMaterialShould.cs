@@ -30,7 +30,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         yield return texture.routine;
 
         PBRMaterial mat = TestUtils.CreateEntityWithPBRMaterial(scene,
-            new PBRMaterial.Model
+            new PBRMaterialModel
             {
                 albedoTexture = texture.id,
                 metallic = 0,
@@ -41,7 +41,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         yield return mat.routine;
 
         PBRMaterial mat2 = TestUtils.CreateEntityWithPBRMaterial(scene,
-            new PBRMaterial.Model
+            new PBRMaterialModel
             {
                 albedoTexture = texture.id,
                 metallic = 0,
@@ -64,7 +64,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         yield return texture.routine;
 
         PBRMaterial matPBR = TestUtils.CreateEntityWithPBRMaterial(scene,
-            new PBRMaterial.Model
+            new PBRMaterialModel
             {
                 albedoTexture = texture.id,
                 metallic = 0,
@@ -97,7 +97,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
 
         // Instantiate entity with default PBR Material
         TestUtils.InstantiateEntityWithMaterial(scene, entityId, Vector3.zero,
-            new PBRMaterial.Model(), materialID);
+            new PBRMaterialModel(), materialID);
 
         var materialComponent = scene.disposableComponents[materialID] as DCL.Components.PBRMaterial;
 
@@ -152,7 +152,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         ColorUtility.TryParseHtmlString("#42f4aa", out color2);
         ColorUtility.TryParseHtmlString("#601121", out color3);
 
-        scene.SharedComponentUpdate(materialID, JsonUtility.ToJson(new DCL.Components.PBRMaterial.Model
+        scene.SharedComponentUpdate(materialID, JsonUtility.ToJson(new PBRMaterialModel
         {
             albedoTexture = texture.id,
             albedoColor = color1,
@@ -202,7 +202,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         string firstMaterialID = "a-material";
 
         TestUtils.InstantiateEntityWithMaterial(scene, firstEntityID, Vector3.zero,
-            new DCL.Components.PBRMaterial.Model
+            new PBRMaterialModel
             {
                 metallic = 0.3f,
             }, firstMaterialID);
@@ -215,7 +215,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         string secondMaterialID = "b-material";
 
         TestUtils.InstantiateEntityWithMaterial(scene, secondEntityID, Vector3.zero,
-            new DCL.Components.PBRMaterial.Model
+            new PBRMaterialModel
             {
                 metallic = 0.66f,
             }, secondMaterialID);
@@ -252,7 +252,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
     {
         // Create first entity with material
         PBRMaterial material1 = TestUtils.CreateEntityWithPBRMaterial(scene,
-            new PBRMaterial.Model
+            new PBRMaterialModel
             {
                 metallic = 0.3f,
             }, out IDCLEntity entity1);
@@ -262,7 +262,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
 
         // Create second entity with material
         PBRMaterial material2 = TestUtils.CreateEntityWithPBRMaterial(scene,
-            new PBRMaterial.Model
+            new PBRMaterialModel
             {
                 metallic = 0.66f,
             }, out IDCLEntity entity2);
@@ -297,7 +297,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         Assert.AreApproximatelyEqual(0.66f, secondRenderer.sharedMaterial.GetFloat("_Metallic"));
 
         // Update material properties
-        scene.SharedComponentUpdate(material1.id, JsonUtility.ToJson(new PBRMaterial.Model
+        scene.SharedComponentUpdate(material1.id, JsonUtility.ToJson(new PBRMaterialModel
         {
             metallic = 0.95f
         }));
@@ -325,9 +325,9 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
 
         yield return dclTexture.routine;
 
-        PBRMaterial mat = TestUtils.SharedComponentCreate<PBRMaterial, PBRMaterial.Model>(scene,
+        PBRMaterial mat = TestUtils.SharedComponentCreate<PBRMaterial, PBRMaterialModel>(scene,
             CLASS_ID.PBR_MATERIAL,
-            new PBRMaterial.Model
+            new PBRMaterialModel
             {
                 albedoTexture = dclTexture.id,
                 metallic = 0,
@@ -359,9 +359,9 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         ColorUtility.TryParseHtmlString("#808080", out color1);
 
         // 1. Create component with non-default configs
-        PBRMaterial PBRMaterialComponent = TestUtils.SharedComponentCreate<PBRMaterial, PBRMaterial.Model>(scene,
+        PBRMaterial PBRMaterialComponent = TestUtils.SharedComponentCreate<PBRMaterial, PBRMaterialModel>(scene,
             CLASS_ID.PBR_MATERIAL,
-            new PBRMaterial.Model
+            new PBRMaterialModel
             {
                 albedoColor = color1,
                 metallic = 0.3f,
@@ -378,7 +378,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
         Assert.AreEqual(3f, PBRMaterialComponent.GetModel().specularIntensity);
 
         // 3. Update component with missing values
-        scene.SharedComponentUpdate(PBRMaterialComponent.id, JsonUtility.ToJson(new PBRMaterial.Model { }));
+        scene.SharedComponentUpdate(PBRMaterialComponent.id, JsonUtility.ToJson(new PBRMaterialModel { }));
 
         yield return PBRMaterialComponent.routine;
 
@@ -392,7 +392,7 @@ public class PBRMaterialShould : IntegrationTestSuite_Legacy
     [UnityTest]
     public IEnumerator GetReplacedWhenAnotherMaterialIsAttached()
     {
-        yield return TestUtils.TestAttachedSharedComponentOfSameTypeIsReplaced<PBRMaterial.Model, PBRMaterial>(
+        yield return TestUtils.TestAttachedSharedComponentOfSameTypeIsReplaced<PBRMaterialModel, PBRMaterial>(
             scene, CLASS_ID.PBR_MATERIAL);
     }
 }

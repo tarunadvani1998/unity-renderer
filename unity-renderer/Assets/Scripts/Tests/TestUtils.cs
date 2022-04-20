@@ -433,26 +433,26 @@ namespace DCL.Helpers
             return material;
         }
 
-        public static PBRMaterial AttachPBRMaterialToEntity(ParcelScene scene, IDCLEntity entity, PBRMaterial.Model model)
+        public static PBRMaterial AttachPBRMaterialToEntity(ParcelScene scene, IDCLEntity entity, PBRMaterialModel model)
         {
-            PBRMaterial material = SharedComponentCreate<PBRMaterial, PBRMaterial.Model>(scene, CLASS_ID.PBR_MATERIAL, model);
+            PBRMaterial material = SharedComponentCreate<PBRMaterial, PBRMaterialModel>(scene, CLASS_ID.PBR_MATERIAL, model);
             SharedComponentAttach(material, entity);
             return material;
         }
 
-        public static PBRMaterial CreateEntityWithPBRMaterial(ParcelScene scene, PBRMaterial.Model model,
+        public static PBRMaterial CreateEntityWithPBRMaterial(ParcelScene scene, PBRMaterialModel model,
             out IDCLEntity entity)
         {
             return CreateEntityWithPBRMaterial(scene, model, Vector3.zero, out entity);
         }
 
-        public static PBRMaterial CreateEntityWithPBRMaterial(ParcelScene scene, PBRMaterial.Model model, Vector3 position,
+        public static PBRMaterial CreateEntityWithPBRMaterial(ParcelScene scene, PBRMaterialModel model, Vector3 position,
             out IDCLEntity entity)
         {
             InstantiateEntityWithShape<BoxShape, BoxShape.Model>(scene, CLASS_ID.BOX_SHAPE, position,
                 out entity);
             PBRMaterial material =
-                SharedComponentCreate<PBRMaterial, PBRMaterial.Model>(scene, CLASS_ID.PBR_MATERIAL, model);
+                SharedComponentCreate<PBRMaterial, PBRMaterialModel>(scene, CLASS_ID.PBR_MATERIAL, model);
             SharedComponentAttach(material, entity);
             return material;
         }
@@ -530,7 +530,7 @@ namespace DCL.Helpers
         }
 
         public static void InstantiateEntityWithMaterial(ParcelScene scene, string entityId, Vector3 position,
-            PBRMaterial.Model pbrMaterial, string materialComponentID = "a-material")
+            PBRMaterialModel pbrMaterial, string materialComponentID = "a-material")
         {
             InstantiateEntityWithShape(scene, entityId, DCL.Models.CLASS_ID.BOX_SHAPE, position);
 

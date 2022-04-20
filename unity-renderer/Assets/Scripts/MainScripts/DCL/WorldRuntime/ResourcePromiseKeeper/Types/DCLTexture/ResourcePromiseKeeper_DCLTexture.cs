@@ -45,72 +45,69 @@ public class ResourcePromiseKeeper_DCLTexture : ResourcePromiseKeeper<DCLTexture
         {
             dclTexture = null;
         });
-
+        
         await promise;
         resourceDclTexture.Set(dclTexture);
         return resourceDclTexture;
     }
 
-    private IEnumerator WaitForLoading()
-    {
-        
-    }
-
     private string FindSceneForTheDCLTexture(DCLTextureModel baseModel)
     {
-        foreach (IParcelScene scene in Environment.i.world.state.scenesSortedByDistance)
-        {
-            if(!scene.disposableComponents.TryGetValue(CLASS_ID.TEXTURE.ToString(), out ISharedComponent sharedComponent))
-                continue;
-            
-            DCLTexture textureComponent = (DCLTexture) sharedComponent;
-            if(textureComponent.GetModel() != baseModel)
-                continue;
-            
-            string contentsUrl;
-            scene.contentProvider.TryGetContentsUrl(baseModel.src, out contentsUrl);
-            return contentsUrl;
-        }
+        // foreach (IParcelScene scene in Environment.i.world.state.scenesSortedByDistance)
+        // {
+        //     if(!scene.disposableComponents.TryGetValue(CLASS_ID.TEXTURE.ToString(), out ISharedComponent sharedComponent))
+        //         continue;
+        //     
+        //     DCLTexture textureComponent = (DCLTexture) sharedComponent;
+        //     if(textureComponent.GetModel() != baseModel)
+        //         continue;
+        //     
+        //     string contentsUrl;
+        //     scene.contentProvider.TryGetContentsUrl(baseModel.src, out contentsUrl);
+        //     return contentsUrl;
+        // }
         return "";
     }
     
     public IEnumerator FetchTextureComponent(string componentId,
         System.Action<DCLTexture> OnFinish)
     {
-        // NOTE: This will dissapear in the next PR where the DCLTextures won't be attached to an entity, or scene
-        foreach (IParcelScene scene in Environment.i.world.state.scenesSortedByDistance)
-        {
-            if(!scene.disposableComponents.TryGetValue(componentId, out ISharedComponent sharedComponent))
-                continue;
-            
-            DCLTexture textureComponent = (DCLTexture) sharedComponent;
+        // // NOTE: This will dissapear in the next PR where the DCLTextures won't be attached to an entity, or scene
+        // foreach (IParcelScene scene in Environment.i.world.state.scenesSortedByDistance)
+        // {
+        //     if(!scene.disposableComponents.TryGetValue(componentId, out ISharedComponent sharedComponent))
+        //         continue;
+        //     
+        //     DCLTexture textureComponent = (DCLTexture) sharedComponent;
+        //
+        //     if (textureComponent == null)
+        //     {
+        //         Debug.Log($"couldn't fetch texture, the shared component with id {componentId} is NOT a DCLTexture");
+        //         yield break;
+        //     }
+        //
+        //     yield return new WaitUntil(() => textureComponent.texture != null);
+        //
+        //     OnFinish.Invoke(textureComponent);
+        // }
+        //
+        // if (Environment.i.world.state.scenesSortedByDistance[0].disposableComponents.TryGetValue(componentId, out ISharedComponent sharedComponent2))
+        // {
+        //
+        //     DCLTexture textureComponent = (DCLTexture) sharedComponent2;
+        //
+        // if (textureComponent == null)
+        // {
+        //     Debug.Log($"couldn't fetch texture, the shared component with id {componentId} is NOT a DCLTexture");
+        //     yield break;
+        // }
+        //
+        // yield return new WaitUntil(() => textureComponent.texture != null);
+        //
+        // OnFinish.Invoke(textureComponent);
+        //                 
+        // }
 
-            if (textureComponent == null)
-            {
-                Debug.Log($"couldn't fetch texture, the shared component with id {componentId} is NOT a DCLTexture");
-                yield break;
-            }
-
-            yield return new WaitUntil(() => textureComponent.texture != null);
-
-            OnFinish.Invoke(textureComponent);
-        }
-
-        if (Environment.i.world.state.scenesSortedByDistance[0].disposableComponents.TryGetValue(componentId, out ISharedComponent sharedComponent2))
-        {
-
-            DCLTexture textureComponent = (DCLTexture) sharedComponent2;
-
-        if (textureComponent == null)
-        {
-            Debug.Log($"couldn't fetch texture, the shared component with id {componentId} is NOT a DCLTexture");
-            yield break;
-        }
-
-        yield return new WaitUntil(() => textureComponent.texture != null);
-
-        OnFinish.Invoke(textureComponent);
-                        
-        }
+        yield return  null;
     }
 }

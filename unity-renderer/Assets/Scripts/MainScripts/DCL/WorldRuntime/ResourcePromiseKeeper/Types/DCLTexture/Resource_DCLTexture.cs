@@ -8,6 +8,6 @@ public class Resource_DCLTexture : Resource
     public override void Destroy()
     {
         DCLTexture texture = (DCLTexture)Get();
-        texture.Dispose();
+        // texture.Dispose();
     }
 }

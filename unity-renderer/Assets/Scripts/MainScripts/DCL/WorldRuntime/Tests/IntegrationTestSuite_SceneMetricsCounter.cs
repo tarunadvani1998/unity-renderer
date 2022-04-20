@@ -81,10 +81,10 @@ public class IntegrationTestSuite_SceneMetricsCounter : IntegrationTestSuite
 
     protected PBRMaterial CreatePBRMaterial( string albedoTexId, string alphaTexId, string bumpTexId, string emissiveTexId )
     {
-        PBRMaterial basicMaterial = TestUtils.SharedComponentCreate<PBRMaterial, PBRMaterial.Model>(
+        PBRMaterial basicMaterial = TestUtils.SharedComponentCreate<PBRMaterial, PBRMaterialModel>(
             scene,
             DCL.Models.CLASS_ID.PBR_MATERIAL,
-            new PBRMaterial.Model()
+            new PBRMaterialModel()
             {
                 albedoTexture = albedoTexId,
                 alphaTexture = alphaTexId,
