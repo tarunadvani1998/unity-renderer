@@ -31,7 +31,7 @@ namespace DCL.Components
             public float playbackRate = 1f;
             public bool loop = false;
             public float seek = -1;
-            public BabylonWrapMode wrap = BabylonWrapMode.CLAMP;
+            public DCLTextureModel.BabylonWrapMode wrap = DCLTextureModel.BabylonWrapMode.CLAMP;
             public FilterMode samplingMode = FilterMode.Bilinear;
 
             public override BaseModel GetDataFromJSON(string json) { return Utils.SafeFromJson<Model>(json); }
@@ -76,13 +76,13 @@ namespace DCL.Components
 
             switch (model.wrap)
             {
-                case BabylonWrapMode.CLAMP:
+                case DCLTextureModel.BabylonWrapMode.CLAMP:
                     unityWrap = TextureWrapMode.Clamp;
                     break;
-                case BabylonWrapMode.WRAP:
+                case DCLTextureModel.BabylonWrapMode.WRAP:
                     unityWrap = TextureWrapMode.Repeat;
                     break;
-                case BabylonWrapMode.MIRROR:
+                case DCLTextureModel.BabylonWrapMode.MIRROR:
                     unityWrap = TextureWrapMode.Mirror;
                     break;
             }

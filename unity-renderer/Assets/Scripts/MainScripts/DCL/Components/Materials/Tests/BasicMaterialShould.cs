@@ -68,7 +68,7 @@ public class BasicMaterialShould : IntegrationTestSuite_Legacy
         DCLTexture dclTexture = TestUtils.CreateDCLTexture(
             scene,
             TestAssetsUtils.GetPath() + "/Images/atlas.png",
-            DCLTexture.BabylonWrapMode.CLAMP,
+            DCLTextureModel.BabylonWrapMode.CLAMP,
             FilterMode.Bilinear);
 
         yield return dclTexture.routine;
@@ -223,7 +223,7 @@ public class BasicMaterialShould : IntegrationTestSuite_Legacy
         DCLTexture dclTexture = TestUtils.CreateDCLTexture(
             scene,
             TestAssetsUtils.GetPath() + "/Images/atlas.png",
-            DCLTexture.BabylonWrapMode.MIRROR,
+            DCLTextureModel.BabylonWrapMode.MIRROR,
             FilterMode.Bilinear);
 
         // Update material

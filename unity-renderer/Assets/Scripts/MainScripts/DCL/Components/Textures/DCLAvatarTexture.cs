@@ -40,7 +40,7 @@ namespace DCL.Components
         }
 
         [System.Serializable]
-        public class AvatarModel : DCLTexture.Model
+        public class AvatarModel : DCLTextureModel
         {
             public string userId;
             public override BaseModel GetDataFromJSON(string json) { return Utils.SafeFromJson<AvatarModel>(json); }

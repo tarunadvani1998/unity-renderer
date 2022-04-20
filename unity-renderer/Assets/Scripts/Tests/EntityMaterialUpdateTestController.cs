@@ -20,13 +20,13 @@ public class EntityMaterialUpdateTestController : MonoBehaviour
         DCLTexture dclAtlasTexture = TestUtils.CreateDCLTexture(
             scene,
             TestAssetsUtils.GetPath() + "/Images/atlas.png",
-            DCLTexture.BabylonWrapMode.CLAMP,
+            DCLTextureModel.BabylonWrapMode.CLAMP,
             FilterMode.Bilinear);
 
         DCLTexture dclAvatarTexture = TestUtils.CreateDCLTexture(
             scene,
             TestAssetsUtils.GetPath() + "/Images/avatar.png",
-            DCLTexture.BabylonWrapMode.CLAMP,
+            DCLTextureModel.BabylonWrapMode.CLAMP,
             FilterMode.Bilinear);
 
 

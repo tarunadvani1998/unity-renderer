@@ -1,0 +1,18 @@
+{
+    "name": "ResourcePromiseKeeper",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3ac909a9e663fbd4fbcffe071a761ac6",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:06069cbaab5a0cf45b29d87e585151ed"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

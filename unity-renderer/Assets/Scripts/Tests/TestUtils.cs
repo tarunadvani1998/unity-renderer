@@ -196,14 +196,14 @@ namespace DCL.Helpers
 
         public static DCLTexture CreateDCLTexture(ParcelScene scene,
             string url,
-            DCLTexture.BabylonWrapMode wrapMode = DCLTexture.BabylonWrapMode.CLAMP,
+            DCLTextureModel.BabylonWrapMode wrapMode = DCLTextureModel.BabylonWrapMode.CLAMP,
             FilterMode filterMode = FilterMode.Bilinear)
         {
-            return SharedComponentCreate<DCLTexture, DCLTexture.Model>
+            return SharedComponentCreate<DCLTexture, DCLTextureModel>
             (
                 scene,
                 DCL.Models.CLASS_ID.TEXTURE,
-                new DCLTexture.Model
+                new DCLTextureModel
                 {
                     src = url,
                     wrap = wrapMode,

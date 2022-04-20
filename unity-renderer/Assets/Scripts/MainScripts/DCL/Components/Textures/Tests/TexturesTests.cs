@@ -28,7 +28,7 @@ namespace Tests
         {
             DCLTexture dclTexture = TestUtils.CreateDCLTexture(scene,
                 TestAssetsUtils.GetPath() + "/Images/avatar.png",
-                DCLTexture.BabylonWrapMode.CLAMP,
+                DCLTextureModel.BabylonWrapMode.CLAMP,
                 FilterMode.Bilinear);
 
             yield return dclTexture.routine;
@@ -46,7 +46,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TextureAttachedGetsReplacedOnNewAttachment()
         {
-            yield return TestUtils.TestAttachedSharedComponentOfSameTypeIsReplaced<DCLTexture.Model, DCLTexture>(
+            yield return TestUtils.TestAttachedSharedComponentOfSameTypeIsReplaced<DCLTextureModel, DCLTexture>(
                 scene, CLASS_ID.TEXTURE);
         }
 

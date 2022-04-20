@@ -1,3 +1,4 @@
+using System;
 using DCL.Controllers;
 using DCL.Helpers;
 using DCL.Models;
@@ -36,6 +37,43 @@ namespace DCL.Components
             public int transparencyMode = 4; // 0: OPAQUE; 1: ALPHATEST; 2: ALPHBLEND; 3: ALPHATESTANDBLEND; 4: AUTO (Engine decide)
 
             public override BaseModel GetDataFromJSON(string json) { return Utils.SafeFromJson<Model>(json); }
+            public override bool Equals(object obj) {
+                if (ReferenceEquals(null, obj))
+                    return false;
+                if (ReferenceEquals(this, obj))
+                    return true;
+                if (obj.GetType() != this.GetType())
+                    return false;
+                return Equals((Model) obj);
+            }
+            
+            protected bool Equals(Model other)
+            {
+                return alphaTest.Equals(other.alphaTest) && albedoColor.Equals(other.albedoColor) && albedoTexture == other.albedoTexture && metallic.Equals(other.metallic) && roughness.Equals(other.roughness) && microSurface.Equals(other.microSurface) && specularIntensity.Equals(other.specularIntensity) && alphaTexture == other.alphaTexture && emissiveTexture == other.emissiveTexture && emissiveColor.Equals(other.emissiveColor) && emissiveIntensity.Equals(other.emissiveIntensity) && reflectivityColor.Equals(other.reflectivityColor) && directIntensity.Equals(other.directIntensity) && bumpTexture == other.bumpTexture && castShadows == other.castShadows && transparencyMode == other.transparencyMode;
+            }
+            
+            public override int GetHashCode() {
+                unchecked
+                {
+                    int hashCode = alphaTest.GetHashCode();
+                    hashCode = (hashCode * 397) ^ albedoColor.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (albedoTexture != null ? albedoTexture.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ metallic.GetHashCode();
+                    hashCode = (hashCode * 397) ^ roughness.GetHashCode();
+                    hashCode = (hashCode * 397) ^ microSurface.GetHashCode();
+                    hashCode = (hashCode * 397) ^ specularIntensity.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (alphaTexture != null ? alphaTexture.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (emissiveTexture != null ? emissiveTexture.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ emissiveColor.GetHashCode();
+                    hashCode = (hashCode * 397) ^ emissiveIntensity.GetHashCode();
+                    hashCode = (hashCode * 397) ^ reflectivityColor.GetHashCode();
+                    hashCode = (hashCode * 397) ^ directIntensity.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (bumpTexture != null ? bumpTexture.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ castShadows.GetHashCode();
+                    hashCode = (hashCode * 397) ^ transparencyMode;
+                    return hashCode;
+                }
+            }
         }
 
         enum TransparencyMode
@@ -58,13 +96,13 @@ namespace DCL.Components
         DCLTexture emissiveDCLTexture = null;
         DCLTexture bumpDCLTexture = null;
 
+        private Model oldModel;
+
         private List<Coroutine> textureFetchCoroutines = new List<Coroutine>();
 
         public PBRMaterial()
         {
             model = new Model();
-
-            LoadMaterial(PBR_MATERIAL_NAME);
 
             OnAttach += OnMaterialAttached;
             OnDetach += OnMaterialDetached;
@@ -89,125 +127,21 @@ namespace DCL.Components
         {
             Model model = (Model) newModel;
 
-            LoadMaterial(PBR_MATERIAL_NAME);
+            Environment.i.serviceLocator.Get<IResourcePromiseKeeperService>().ForgetMaterial(oldModel);
+            oldModel = model;
+            AsignMaterial(model);
 
-            material.SetColor(ShaderUtils.BaseColor, model.albedoColor);
-
-            if (model.emissiveColor != Color.clear && model.emissiveColor != Color.black)
-            {
-                material.EnableKeyword("_EMISSION");
-            }
-
-            // METALLIC/SPECULAR CONFIGURATIONS
-            material.SetColor(ShaderUtils.EmissionColor, model.emissiveColor * model.emissiveIntensity);
-            material.SetColor(ShaderUtils.SpecColor, model.reflectivityColor);
-
-            material.SetFloat(ShaderUtils.Metallic, model.metallic);
-            material.SetFloat(ShaderUtils.Smoothness, 1 - model.roughness);
-            material.SetFloat(ShaderUtils.EnvironmentReflections, model.microSurface);
-            material.SetFloat(ShaderUtils.SpecularHighlights, model.specularIntensity * model.directIntensity);
-
-
-            // FETCH AND LOAD EMISSIVE TEXTURE
-            var fetchEmission = FetchTexture(ShaderUtils.EmissionMap, model.emissiveTexture, emissiveDCLTexture);
-
-            SetupTransparencyMode();
-
-            // FETCH AND LOAD TEXTURES
-            var fetchBaseMap = FetchTexture(ShaderUtils.BaseMap, model.albedoTexture, albedoDCLTexture);
-            var fetchAlpha = FetchTexture(ShaderUtils.AlphaTexture, model.alphaTexture, alphaDCLTexture);
-            var fetchBump = FetchTexture(ShaderUtils.BumpMap, model.bumpTexture, bumpDCLTexture);
-
-            textureFetchCoroutines.Add(CoroutineStarter.Start(fetchEmission));
-            textureFetchCoroutines.Add(CoroutineStarter.Start(fetchBaseMap));
-            textureFetchCoroutines.Add(CoroutineStarter.Start(fetchAlpha));
-            textureFetchCoroutines.Add(CoroutineStarter.Start(fetchBump));
-
-            yield return fetchBaseMap;
-            yield return fetchAlpha;
-            yield return fetchBump;
-            yield return fetchEmission;
-
+            // Note: Ugly wait to insert Unitask in the components
+            yield return new WaitUntil(() => material != null);
+            
             foreach (IDCLEntity entity in attachedEntities)
                 InitMaterial(entity);
         }
 
-        private void SetupTransparencyMode()
+        private async void AsignMaterial(Model model)
         {
-            Model model = (Model) this.model;
-
-            // Reset shader keywords
-            material.DisableKeyword("_ALPHATEST_ON"); // Cut Out Transparency
-            material.DisableKeyword("_ALPHABLEND_ON"); // Fade Transparency
-            material.DisableKeyword("_ALPHAPREMULTIPLY_ON"); // Transparent
-
-            TransparencyMode transparencyMode = (TransparencyMode) model.transparencyMode;
-
-            if (transparencyMode == TransparencyMode.AUTO)
-            {
-                if (!string.IsNullOrEmpty(model.alphaTexture) || model.albedoColor.a < 1f) //AlphaBlend
-                {
-                    transparencyMode = TransparencyMode.ALPHA_BLEND;
-                }
-                else // Opaque
-                {
-                    transparencyMode = TransparencyMode.OPAQUE;
-                }
-            }
-
-            switch (transparencyMode)
-            {
-                case TransparencyMode.OPAQUE:
-                    material.renderQueue = (int) UnityEngine.Rendering.RenderQueue.Geometry;
-                    material.SetFloat(ShaderUtils.AlphaClip, 0);
-                    break;
-                case TransparencyMode.ALPHA_TEST: // ALPHATEST
-                    material.EnableKeyword("_ALPHATEST_ON");
-
-                    material.SetInt(ShaderUtils.SrcBlend, (int) UnityEngine.Rendering.BlendMode.One);
-                    material.SetInt(ShaderUtils.DstBlend, (int) UnityEngine.Rendering.BlendMode.Zero);
-                    material.SetInt(ShaderUtils.ZWrite, 1);
-                    material.SetFloat(ShaderUtils.AlphaClip, 1);
-                    material.SetFloat(ShaderUtils.Cutoff, model.alphaTest);
-                    material.SetInt("_Surface", 0);
-                    material.renderQueue = (int) UnityEngine.Rendering.RenderQueue.AlphaTest;
-                    break;
-                case TransparencyMode.ALPHA_BLEND: // ALPHABLEND
-                    material.EnableKeyword("_ALPHABLEND_ON");
-
-                    material.SetInt(ShaderUtils.SrcBlend, (int) UnityEngine.Rendering.BlendMode.SrcAlpha);
-                    material.SetInt(ShaderUtils.DstBlend, (int) UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    material.SetInt(ShaderUtils.ZWrite, 0);
-                    material.SetFloat(ShaderUtils.AlphaClip, 0);
-                    material.renderQueue = (int) UnityEngine.Rendering.RenderQueue.Transparent;
-                    material.SetInt("_Surface", 1);
-                    break;
-                case TransparencyMode.ALPHA_TEST_AND_BLEND:
-                    material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-
-                    material.SetInt(ShaderUtils.SrcBlend, (int) UnityEngine.Rendering.BlendMode.One);
-                    material.SetInt(ShaderUtils.DstBlend, (int) UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    material.SetInt(ShaderUtils.ZWrite, 0);
-                    material.SetFloat(ShaderUtils.AlphaClip, 1);
-                    material.renderQueue = (int) UnityEngine.Rendering.RenderQueue.Transparent;
-                    material.SetInt("_Surface", 1);
-                    break;
-            }
-        }
-
-        private void LoadMaterial(string resourcesFilename)
-        {
-            if (material == null || currentMaterialResourcesFilename != resourcesFilename)
-            {
-                if (material != null)
-                    Object.Destroy(material);
-
-                material = new Material(Utils.EnsureResourcesMaterial(MATERIAL_RESOURCES_PATH + resourcesFilename));
-#if UNITY_EDITOR
-                material.name = "PBRMaterial_" + id;
-#endif
-                currentMaterialResourcesFilename = resourcesFilename;
-            }
+            var wrapper = await Environment.i.serviceLocator.Get<IResourcePromiseKeeperService>().GetMaterial(model);
+            material = wrapper.Get();
         }
 
         void OnMaterialAttached(IDCLEntity entity)
@@ -281,55 +215,12 @@ namespace DCL.Components
             DataStore.i.sceneWorldObjects.RemoveMaterial(scene.sceneData.id, entity.entityId, material);
         }
 
-        IEnumerator FetchTexture(int materialPropertyId, string textureComponentId, DCLTexture cachedDCLTexture)
-        {
-            if (!string.IsNullOrEmpty(textureComponentId))
-            {
-                if (!AreSameTextureComponent(cachedDCLTexture, textureComponentId))
-                {
-                    yield return DCLTexture.FetchTextureComponent(scene, textureComponentId,
-                        (fetchedDCLTexture) =>
-                        {
-                            if (material == null)
-                                return;
-
-                            material.SetTexture(materialPropertyId, fetchedDCLTexture.texture);
-                            SwitchTextureComponent(cachedDCLTexture, fetchedDCLTexture);
-                        });
-                }
-            }
-            else
-            {
-                material.SetTexture(materialPropertyId, null);
-                cachedDCLTexture?.DetachFrom(this);
-            }
-        }
-
-        bool AreSameTextureComponent(DCLTexture dclTexture, string textureId)
-        {
-            if (dclTexture == null)
-                return false;
-            return dclTexture.id == textureId;
-        }
-
-        void SwitchTextureComponent(DCLTexture cachedTexture, DCLTexture newTexture)
-        {
-            cachedTexture?.DetachFrom(this);
-            cachedTexture = newTexture;
-            cachedTexture.AttachTo(this);
-        }
-
         public override void Dispose()
         {
             albedoDCLTexture?.DetachFrom(this);
             alphaDCLTexture?.DetachFrom(this);
             emissiveDCLTexture?.DetachFrom(this);
             bumpDCLTexture?.DetachFrom(this);
-
-            if (material != null)
-            {
-                Utils.SafeDestroy(material);
-            }
 
             for (int i = 0; i < textureFetchCoroutines.Count; i++)
             {
@@ -338,6 +229,8 @@ namespace DCL.Components
                 if ( coroutine != null )
                     CoroutineStarter.Stop(coroutine);
             }
+            
+            Environment.i.serviceLocator.Get<IResourcePromiseKeeperService>().ForgetMaterial(oldModel);
 
             base.Dispose();
         }
