@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class ProtocolV2
 {
-
     #region Class Declarations
 
     [System.Serializable]
@@ -25,7 +24,10 @@ public class ProtocolV2
             a = color.a;
         }
 
-        public Color ToColor() { return new Color(r, g, b, a); }
+        public Color ToColor()
+        {
+            return new Color(r, g, b, a);
+        }
     }
 
     [System.Serializable]
@@ -38,7 +40,6 @@ public class ProtocolV2
 
         public QuaternionRepresentation(Quaternion quaternion)
         {
-
             x = quaternion.x;
             y = quaternion.y;
             z = quaternion.z;
@@ -64,7 +65,6 @@ public class ProtocolV2
         public QuaternionRepresentation rotation;
 
         public Vector3 scale;
-
     }
 
     [System.Serializable]
@@ -150,8 +150,8 @@ public class ProtocolV2
 
     public class PublishPayload
     {
-        public Dictionary<string, object > files;
-        public Dictionary<string, object > filesToDecode;
+        public Dictionary<string, object> files;
+        public Dictionary<string, object> filesToDecode;
         public CatalystSceneEntityMetadata metadata;
         public string[] pointers;
         public StatelessManifest statelessManifest;
@@ -159,5 +159,4 @@ public class ProtocolV2
     }
 
     #endregion
-
 }

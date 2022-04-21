@@ -33,10 +33,10 @@ namespace Tests
         protected override ServiceLocator InitializeServiceLocator()
         {
             ServiceLocator result = DCL.ServiceLocatorTestFactory.CreateMocked();
-            result.Register<IRuntimeComponentFactory>( () => new RuntimeComponentFactory());
-            result.Register<IWorldState>( () => new WorldState());
-            result.Register<IUpdateEventHandler>( () => new UpdateEventHandler());
-            result.Register<IWebRequestController>( WebRequestController.Create );
+            result.Register<IRuntimeComponentFactory>(() => new RuntimeComponentFactory());
+            result.Register<IWorldState>(() => new WorldState());
+            result.Register<IUpdateEventHandler>(() => new UpdateEventHandler());
+            result.Register<IWebRequestController>(WebRequestController.Create);
             return result;
         }
 
@@ -69,7 +69,6 @@ namespace Tests
             DCL.Environment.i.world.state.currentSceneId = scene.sceneData.id;
 
             uuidEventsPlugin = new UUIDEventsPlugin();
-
         }
 
         protected override IEnumerator TearDown()
@@ -95,7 +94,8 @@ namespace Tests
                 out entity,
                 new BoxShape.Model() { });
 
-            TestUtils.SetEntityTransform(scene, entity, new Vector3(8, 2, 10), Quaternion.identity, new Vector3(3, 3, 3));
+            TestUtils.SetEntityTransform(scene, entity, new Vector3(8, 2, 10), Quaternion.identity,
+                new Vector3(3, 3, 3));
             yield return shape.routine;
 
             var OnPointerDownModel = new OnPointerDown.Model()
@@ -147,7 +147,8 @@ namespace Tests
                 out entity,
                 new BoxShape.Model() { });
 
-            TestUtils.SetEntityTransform(scene, entity, new Vector3(8, 2, 10), Quaternion.identity, new Vector3(3, 3, 3));
+            TestUtils.SetEntityTransform(scene, entity, new Vector3(8, 2, 10), Quaternion.identity,
+                new Vector3(3, 3, 3));
             yield return shape.routine;
 
             var OnPointerDownModel = new OnPointerDown.Model()
@@ -200,7 +201,8 @@ namespace Tests
                 Vector3.zero,
                 out blockingEntity,
                 new BoxShape.Model() { });
-            TestUtils.SetEntityTransform(scene, blockingEntity, new Vector3(3, 3, 3), Quaternion.identity, new Vector3(1, 1, 1));
+            TestUtils.SetEntityTransform(scene, blockingEntity, new Vector3(3, 3, 3), Quaternion.identity,
+                new Vector3(1, 1, 1));
             yield return blockingShape.routine;
 
             // Create target entity for click
@@ -211,7 +213,8 @@ namespace Tests
                 Vector3.zero,
                 out clickTargetEntity,
                 new BoxShape.Model() { });
-            TestUtils.SetEntityTransform(scene, clickTargetEntity, new Vector3(0, 0, 5), Quaternion.identity, new Vector3(1, 1, 1));
+            TestUtils.SetEntityTransform(scene, clickTargetEntity, new Vector3(0, 0, 5), Quaternion.identity,
+                new Vector3(1, 1, 1));
             yield return clickTargetShape.routine;
 
             // Enparent target entity as a child of the blocking entity
@@ -229,7 +232,8 @@ namespace Tests
                 type = OnPointerDown.NAME,
                 uuid = onPointerId
             };
-            var component = TestUtils.EntityComponentCreate<OnPointerDown, OnPointerDown.Model>(scene, clickTargetEntity,
+            var component = TestUtils.EntityComponentCreate<OnPointerDown, OnPointerDown.Model>(scene,
+                clickTargetEntity,
                 OnPointerDownModel, CLASS_ID_COMPONENT.UUID_CALLBACK);
 
             yield return component.routine;
@@ -264,7 +268,8 @@ namespace Tests
                 out entity,
                 new BoxShape.Model() { });
 
-            TestUtils.SetEntityTransform(scene, entity, new Vector3(8, 2, 10), Quaternion.identity, new Vector3(3, 3, 3));
+            TestUtils.SetEntityTransform(scene, entity, new Vector3(8, 2, 10), Quaternion.identity,
+                new Vector3(3, 3, 3));
             yield return shape.routine;
 
             var onPointerDownModel = new OnPointerDown.Model()
@@ -296,8 +301,8 @@ namespace Tests
 
             UIContainerRect uiContainerRectShape =
                 TestUtils.SharedComponentCreate<UIContainerRect, UIContainerRect.Model>(scene,
-                    CLASS_ID.UI_CONTAINER_RECT, new UIContainerRect.Model() { color = Color.white });
-            
+                    CLASS_ID.UI_CONTAINER_RECT, new UIContainerRect.Model() {color = Color.white});
+
             yield return uiContainerRectShape.routine;
 
             yield return null;
@@ -319,7 +324,8 @@ namespace Tests
                 out entity,
                 new BoxShape.Model() { });
 
-            TestUtils.SetEntityTransform(scene, entity, new Vector3(8, 2, 10), Quaternion.identity, new Vector3(3, 3, 3));
+            TestUtils.SetEntityTransform(scene, entity, new Vector3(8, 2, 10), Quaternion.identity,
+                new Vector3(3, 3, 3));
             yield return shape.routine;
 
             var onPointerDownModel = new OnPointerDown.Model()
@@ -351,7 +357,7 @@ namespace Tests
 
             UIContainerRect uiContainerRectShape =
                 TestUtils.SharedComponentCreate<UIContainerRect, UIContainerRect.Model>(scene,
-                    CLASS_ID.UI_CONTAINER_RECT, new UIContainerRect.Model() { color = Color.clear });
+                    CLASS_ID.UI_CONTAINER_RECT, new UIContainerRect.Model() {color = Color.clear});
             yield return uiContainerRectShape.routine;
 
             yield return null;
