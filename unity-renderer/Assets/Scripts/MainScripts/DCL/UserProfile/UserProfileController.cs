@@ -27,12 +27,15 @@ public class UserProfileController : MonoBehaviour
 
     public void Awake()
     {
+        Log("User profile controller: is ready");
         i = this;
         ownUserProfile = UserProfile.GetOwnUserProfile();
     }
 
     public void LoadProfile(string payload)
     {
+        Log("Loading profile");
+        Log(payload);
         if (!baseWearablesAlreadyRequested)
         {
             baseWearablesAlreadyRequested = true;
@@ -50,6 +53,14 @@ public class UserProfileController : MonoBehaviour
         var model = JsonUtility.FromJson<UserProfileModel>(payload);
         ownUserProfile.UpdateData(model);
         userProfilesCatalog.Add(model.userId, ownUserProfile);
+        Log("Updated own user profile");
+    }
+
+    public void Log(string msg)
+    {
+        Debug.unityLogger.logEnabled = true;
+        Debug.Log(msg);
+        Debug.unityLogger.logEnabled = false;
     }
 
     public void AddUserProfileToCatalog(string payload) { AddUserProfileToCatalog(JsonUtility.FromJson<UserProfileModel>(payload)); }
