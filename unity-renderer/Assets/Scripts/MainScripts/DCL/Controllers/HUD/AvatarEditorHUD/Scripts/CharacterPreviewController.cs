@@ -94,6 +94,7 @@ public class CharacterPreviewController : MonoBehaviour
         currentAvatarModel.CopyFrom(newModel);
         try
         {
+            Log($"CharacterPreviewController: Starting");
             ct.ThrowIfCancellationRequested();
             List<string> wearables = new List<string>(newModel.wearables);
             wearables.Add(newModel.bodyShape);
@@ -108,14 +109,25 @@ public class CharacterPreviewController : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
+            Log($"CharacterPreviewController: Cancelled");
             return;
         }
         catch (Exception e)
         {
+            Log($"CharacterPreviewController: Exception {e}");
             Debug.LogException(e);
             return;
         }
+        Log($"CharacterPreviewController: Done");
         onDone?.Invoke();
+    }
+
+    public void Log(string msg)
+    {
+        bool current = Debug.unityLogger.logEnabled;
+        Debug.unityLogger.logEnabled = true;
+        Debug.Log(msg);
+        Debug.unityLogger.logEnabled = current;
     }
 
     public void TakeSnapshots(OnSnapshotsReady onSuccess, Action onFailed)

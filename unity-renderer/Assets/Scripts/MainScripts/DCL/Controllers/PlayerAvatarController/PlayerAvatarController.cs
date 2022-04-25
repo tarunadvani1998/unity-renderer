@@ -145,6 +145,7 @@ public class PlayerAvatarController : MonoBehaviour
 
         try
         {
+            Log($"LoadingAvatarRoutine: Starting");
             ct.ThrowIfCancellationRequested();
             if (avatar.status != IAvatar.Status.Loaded || !profile.avatar.HaveSameWearablesAndColors(currentAvatar))
             {
@@ -171,15 +172,17 @@ public class PlayerAvatarController : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
+            Log($"LoadingAvatarRoutine: Cancelled");
             return;
         }
         catch (Exception e)
         {
+            Log($"LoadingAvatarRoutine: Exception {e}");
             Debug.LogException(e);
             WebInterface.ReportAvatarFatalError();
             return;
         }
-
+        Log($"LoadingAvatarRoutine: Finished");
         IAvatarAnchorPoints anchorPoints = new AvatarAnchorPoints();
         anchorPoints.Prepare(avatarContainer.transform, avatar.GetBones(), AvatarSystemUtils.AVATAR_Y_OFFSET + avatar.extents.y);
 
@@ -211,5 +214,13 @@ public class PlayerAvatarController : MonoBehaviour
         avatarLoadingCts?.Dispose();
         avatarLoadingCts = null;
         avatar?.Dispose();
+    }
+
+    public void Log(string msg)
+    {
+        bool current = Debug.unityLogger.logEnabled;
+        Debug.unityLogger.logEnabled = true;
+        Debug.Log(msg);
+        Debug.unityLogger.logEnabled = current;
     }
 }

@@ -58,9 +58,10 @@ public class UserProfileController : MonoBehaviour
 
     public void Log(string msg)
     {
+        bool current = Debug.unityLogger.logEnabled; 
         Debug.unityLogger.logEnabled = true;
         Debug.Log(msg);
-        Debug.unityLogger.logEnabled = false;
+        Debug.unityLogger.logEnabled = current;
     }
 
     public void AddUserProfileToCatalog(string payload) { AddUserProfileToCatalog(JsonUtility.FromJson<UserProfileModel>(payload)); }
