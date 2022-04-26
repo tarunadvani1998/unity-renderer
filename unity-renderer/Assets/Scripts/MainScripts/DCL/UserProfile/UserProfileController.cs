@@ -34,6 +34,18 @@ public class UserProfileController : MonoBehaviour
 
     public void LoadProfile(string payload)
     {
+        Log("Forcing a caught exception");
+        try
+        {
+            throw new Exception("Do something");
+        }
+        catch (Exception  e)
+        {
+            Log($"Caught exception: {e.ToString()}");
+        }
+        Log("Done forcing a caught exception");
+
+
         Log("Loading profile");
         Log(payload);
         if (!baseWearablesAlreadyRequested)
