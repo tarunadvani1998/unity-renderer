@@ -690,7 +690,7 @@ namespace UnityGLTF
 
             // We need to keep compressing in UNITY_EDITOR for the Asset Bundles Converter
 #if !UNITY_STANDALONE || UNITY_EDITOR
-            if ( Application.isPlaying )
+            if ( Application.isPlaying && !DataStore.i.performance.disableTextureCompression.Get())
             {
                 //NOTE(Brian): This breaks importing in editor mode
                 texture.Compress(false);

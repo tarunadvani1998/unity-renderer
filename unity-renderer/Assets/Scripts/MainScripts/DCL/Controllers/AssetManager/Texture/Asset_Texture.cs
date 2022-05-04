@@ -21,7 +21,10 @@ namespace DCL
             texture.filterMode = textureFilterMode;
             
 #if !UNITY_STANDALONE
-            texture.Compress(false);
+            if (!DataStore.i.performance.disableTextureCompression.Get())
+            {
+                texture.Compress(false);
+            }
 #endif
             
             texture.Apply(textureFilterMode != FilterMode.Point, makeNoLongerReadable);

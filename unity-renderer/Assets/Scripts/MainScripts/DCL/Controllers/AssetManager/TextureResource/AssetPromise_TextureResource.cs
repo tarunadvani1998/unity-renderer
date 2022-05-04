@@ -7,12 +7,12 @@ namespace DCL
     {
         private TextureModel model;
         private AssetPromise_Texture texturePromise;
-        
+
         public AssetPromise_TextureResource(TextureModel model)
         {
             this.model = model;
         }
-        
+
         protected override void OnAfterLoadOrReuse() { }
 
         protected override void OnBeforeLoadOrReuse() { }
@@ -22,7 +22,7 @@ namespace DCL
             if(texturePromise != null)
                 AssetPromiseKeeper_Texture.i.Forget(texturePromise);
         }
-        
+
         internal override void OnForget()
         {
             if(texturePromise != null)
@@ -45,7 +45,7 @@ namespace DCL
                     unityWrap = TextureWrapMode.Mirror;
                     break;
             }
-            
+
             if (!string.IsNullOrEmpty(model.src))
             {
                 bool isBase64 = model.src.Contains("image/png;base64");
@@ -66,7 +66,12 @@ namespace DCL
                     {
                         texture.wrapMode = unityWrap;
                         texture.filterMode = unitySamplingMode;
-                        texture.Compress(false);
+
+                        if (!DataStore.i.performance.disableTextureCompression.Get())
+                        {
+                            texture.Compress(false);
+                        }
+
                         texture.Apply(unitySamplingMode != FilterMode.Point, true);
                         asset.texture2D = texture;
                     }
