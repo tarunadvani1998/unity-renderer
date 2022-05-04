@@ -32,6 +32,7 @@ namespace DCL
         private IMessagingControllersManager messagingControllersManager => Environment.i.messaging.manager;
 
         public EntityIdHelper entityIdHelper { get; } = new EntityIdHelper();
+        private readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
 
         public void Initialize()
         {
@@ -369,16 +370,7 @@ namespace DCL
 
         public void SendSceneMessage(string chunk)
         {
-            var renderer = CommonScriptableObjects.rendererState.Get();
-
-            if (!renderer)
-            {
-                EnqueueChunk(chunk);
-            }
-            else
-            {
-                chunksToDecode.Enqueue(chunk);
-            }
+            chunksToDecode.Enqueue(chunk);
         }
 
         private QueuedSceneMessage_Scene Decode(string payload, QueuedSceneMessage_Scene queuedMessage)
@@ -403,31 +395,27 @@ namespace DCL
 
         private IEnumerator DeferredDecodingAndEnqueue()
         {
-            float start = Time.realtimeSinceStartup;
-            float maxTimeForDecode;
-
             while (true)
             {
-                maxTimeForDecode = CommonScriptableObjects.rendererState.Get() ? MAX_TIME_FOR_DECODE : float.MaxValue;
-
                 if (chunksToDecode.Count > 0)
                 {
                     if (chunksToDecode.TryDequeue(out string chunk))
                     {
-                        EnqueueChunk(chunk);
-
-                        if (Time.realtimeSinceStartup - start < maxTimeForDecode)
-                            continue;
+                        yield return EnqueueChunk(chunk);
                     }
                 }
 
                 yield return null;
-
-                start = Time.unscaledTime;
             }
         }
-        private void EnqueueChunk(string chunk)
+        
+        private int framesSkipped = 0;
+        private float lastTimeFrameReport = 0;
+        private IEnumerator EnqueueChunk(string chunk)
         {
+            float start = Time.realtimeSinceStartup;
+            float maxTimeForDecode = CommonScriptableObjects.rendererState.Get() ? MAX_TIME_FOR_DECODE : float.MaxValue;
+
             string[] payloads = chunk.Split(new [] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var count = payloads.Length;
 
@@ -441,7 +429,20 @@ namespace DCL
                 }
                 else
                 {
+                    Debug.Log("Why is this happening? :thinking:");
                     EnqueueSceneMessage(Decode(payloads[i], new QueuedSceneMessage_Scene()));
+                }
+
+                if (Time.realtimeSinceStartup - start > maxTimeForDecode)
+                {
+                    yield return waitForEndOfFrame;
+                    start = Time.realtimeSinceStartup;
+                    framesSkipped++;
+                    if (Time.realtimeSinceStartup - lastTimeFrameReport > 5)
+                    {
+                        Debug.Log("[SceneController] frames skipped while throttling so far: " + framesSkipped);
+                        lastTimeFrameReport = Time.realtimeSinceStartup;
+                    }
                 }
             }
         }
