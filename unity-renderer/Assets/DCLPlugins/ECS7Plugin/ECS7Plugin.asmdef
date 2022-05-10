@@ -1,0 +1,19 @@
+{
+    "name": "ECS7Plugin",
+    "rootNamespace": "",
+    "references": [
+        "GUID:7fe146b43e76fe745aeaf2020feb54b7",
+        "GUID:28f74c468a54948bfa9f625c5d428f56",
+        "GUID:f8a3a0af3ed28474c885e04c605a7962",
+        "GUID:4c681b7be9d945c9badeabb650c609b6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

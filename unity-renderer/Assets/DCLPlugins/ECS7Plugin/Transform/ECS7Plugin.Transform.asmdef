@@ -1,0 +1,22 @@
+{
+    "name": "ECS7Plugin.Transform",
+    "rootNamespace": "",
+    "references": [
+        "GUID:374252a1740a422eb7762fc12ff3bf8a",
+        "GUID:37d2c04574c1d480d8c817e2a7c578e7",
+        "GUID:97d8897529779cb49bebd400c7f402a6",
+        "GUID:b1087c5731ff68448a0a9c625bb7e52d",
+        "GUID:8af21c3a612af2645a9953d4b9b3f6d5",
+        "GUID:f8a3a0af3ed28474c885e04c605a7962",
+        "GUID:1dd0780aa6be12b428c8005d0bee46b8"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
