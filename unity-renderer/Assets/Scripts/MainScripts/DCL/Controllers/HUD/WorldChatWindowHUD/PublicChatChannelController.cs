@@ -20,7 +20,6 @@ public class PublicChatChannelController : IHUD
     private readonly IMouseCatcher mouseCatcher;
     private readonly InputAction_Trigger toggleChatTrigger;
     private ChatHUDController chatHudController;
-    private double initTimeInSeconds;
     private string channelId;
     private CancellationTokenSource deactivatePreviewCancellationToken = new CancellationTokenSource();
     private bool isFirstFocusSkipped;
@@ -75,8 +74,6 @@ public class PublicChatChannelController : IHUD
             mouseCatcher.OnMouseLock += ActivatePreview;
 
         toggleChatTrigger.OnTriggered += HandleChatInputTriggered;
-
-        initTimeInSeconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
     }
 
     public void Setup(string channelId)
@@ -202,16 +199,9 @@ public class PublicChatChannelController : IHUD
             chatHudController.SetInputFieldText($"/w {lastPrivateMessageRecipient} ");
     }
 
-    private bool IsOldPrivateMessage(ChatMessage message)
-    {
-        if (message.messageType != ChatMessage.Type.PRIVATE) return false;
-        var timestampInSeconds = message.timestamp / 1000.0;
-        return timestampInSeconds < initTimeInSeconds;
-    }
-
     private void HandleMessageReceived(ChatMessage message)
     {
-        if (IsOldPrivateMessage(message)) return;
+        if (message.messageType == ChatMessage.Type.PRIVATE) return;
 
         chatHudController.AddChatMessage(message, View.IsActive);
 
