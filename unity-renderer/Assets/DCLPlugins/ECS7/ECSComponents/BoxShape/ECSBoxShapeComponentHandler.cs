@@ -27,6 +27,7 @@ namespace DCL.ECSComponents
             if (primitiveMeshPromisePrimitive != null)
                 AssetPromiseKeeper_PrimitiveMesh.i.Forget(primitiveMeshPromisePrimitive);
             DisposeMesh(scene);
+            PBCylinderShape pb = new PBCylinderShape();
         }
 
         public void OnComponentModelUpdated(IParcelScene scene, IDCLEntity entity, PBBoxShape model)
