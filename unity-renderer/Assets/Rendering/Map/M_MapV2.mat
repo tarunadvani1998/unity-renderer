@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: N_MapV2
+  m_Name: M_MapV2
   m_Shader: {fileID: -6465566751694194690, guid: 63a62584fbe7f8c48b39a20b12390ee3,
     type: 3}
   m_ShaderKeywords: 
@@ -41,12 +41,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_32cc9d687e404975a933633a89578eca: 1
-    - Vector1_d6b5d20802a0431ea86843707c4780d1: 9.13
+    - Vector1_32cc9d687e404975a933633a89578eca: 0.15
+    - Vector1_d6b5d20802a0431ea86843707c4780d1: 1
     m_Colors:
     - Color_43810e24e6b146baacbe452f214f60b2: {r: 0, g: 0, b: 0, a: 0}
-    - Color_590fd915ee47480cbeec28c1413273ac: {r: 1, g: 0.3820755, b: 0.96935207,
-        a: 0}
+    - Color_590fd915ee47480cbeec28c1413273ac: {r: 1, g: 1, b: 1, a: 0}
     - Color_f462ce7a51e2477abc63679dfa03c84f_4: {r: 0.6226415, g: 0.26139194, b: 0.26139194,
         a: 0}
     - Color_f462ce7a51e2477abc63679dfa03c84f_5: {r: 0.54427737, g: 0.764151, b: 0.5506799,
