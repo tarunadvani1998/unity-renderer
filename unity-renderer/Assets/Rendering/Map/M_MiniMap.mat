@@ -7,10 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_MapV3
+  m_Name: M_MiniMap
   m_Shader: {fileID: -6465566751694194690, guid: 9e89fc6c81deee042b4d2be5a9f08328,
     type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: BOOLEAN_7B198A1C88974BFCA98F303C655ED58D_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -57,12 +57,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - BOOLEAN_7B198A1C88974BFCA98F303C655ED58D: 0
+    - BOOLEAN_7B198A1C88974BFCA98F303C655ED58D: 1
     - Vector1_32cc9d687e404975a933633a89578eca: 0.5
     - Vector1_d6b5d20802a0431ea86843707c4780d1: 3.75
     - _ColorMask: 15
     - _GridThickness: 0.8
-    - _MaskCornerRadius: 0
+    - _MaskCornerRadius: 0.02
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -92,7 +92,7 @@ Material:
     - _Color04: {r: 0.23921567, g: 0.22745097, b: 0.2745098, a: 0}
     - _Color05: {r: 0.103773594, g: 0.103773594, b: 0.103773594, a: 0}
     - _GridColor: {r: 0, g: 0, b: 0, a: 0}
-    - _MaskValues: {r: 1, g: 1, b: 0, a: 0}
+    - _MaskValues: {r: 2.22, g: 2.79, b: 0.66, a: -0.33}
     - _Resolution: {r: 1920, g: 1920, b: 0, a: 0}
     - _SizeOfTexture: {r: 512, g: 512, b: 0, a: 0}
   m_BuildTextureStacks: []
