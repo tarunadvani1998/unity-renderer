@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using DCL.Controllers;
 using DCL.Helpers;
 using DCL.Interface;
@@ -141,8 +142,31 @@ namespace DCL.Components
 
         public void SetHoverState(bool hoverState)
         {
+            SetHighlightStatus(entity.meshesInfo.renderers, hoverState);
             Model model = (Model) this.model;
             pointerEventHandler.SetFeedbackState(model.showFeedback, hoverState, model.button, model.hoverText);
+        }
+
+        private void SetHighlightStatus(IReadOnlyList<Renderer> renderers, bool active)
+        {
+            const string FRESNEL_COLOR = "_FresnelColor";
+            for (int i = 0; i < renderers.Count; i++)
+            {
+                Debug.Log($"Setting {active}: {renderers[i].transform.GetHierarchyPath()}");
+                var materials = renderers[i].materials;
+                for (int j = 0; j < materials.Length; j++)
+                {
+                    if (!materials[j].HasProperty(FRESNEL_COLOR))
+                    {
+                        Debug.Log("NO FRESNEL COLOR");
+                        continue;
+                    }
+
+                    var color = materials[j].GetColor(FRESNEL_COLOR);
+                    color.a = active ? 1 : 0;
+                    materials[j].SetColor(FRESNEL_COLOR, color);
+                }
+            }
         }
 
         void SetEventColliders(IDCLEntity entity)
