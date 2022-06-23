@@ -88,8 +88,36 @@ namespace DCL.Protobuf
             var nextVersion = GetLatestProtoVersion();
             DownloadProtoDefinitions(nextVersion);
         }
+        
+        [MenuItem("Decentraland/Protobuf/Download renderer protocol (For debugging)")]
+        public static void DownloadRendererProtocol()
+        {
+            (_, string rendererProtocolPath) = DownloadNPMPackage("@dcl/renderer-protocol", "next");
+            (_, string codeGenProtocolPath) = DownloadNPMPackage("protoc-gen-dclunity", "next");
 
-        public static void DownloadProtoDefinitions(string version)
+            var protos = GetProtoPaths(rendererProtocolPath);
+            Debug.Log(protos.ToString());
+        }
+
+        public static List<string> GetProtoPaths(string basePath)
+        {
+            var res = new List<string>();
+            try
+            {
+                res.AddRange(Directory.GetFiles(basePath, "*.proto"));
+                foreach (string d in Directory.GetDirectories(basePath))
+                {
+                    res.AddRange(GetProtoPaths(d));
+                }
+            }
+            catch (System.Exception excpt)
+            {
+                Console.WriteLine(excpt.Message);
+            }
+            return res;
+        }
+
+        public static (string, string) DownloadNPMPackage(string package, string version)
         {
             WebClient client;
             Stream data;
@@ -97,11 +125,11 @@ namespace DCL.Protobuf
             string libraryJsonString;
             Dictionary<string, object> libraryContent, libraryInfo;
 
-            VerboseLog("Downloading " + NPM_PACKAGE + " version: " + version);
+            VerboseLog("Downloading " + package + " version: " + version);
 
-            // Download the "package.json" of {NPM_PACKAGE}@version
+            // Download the "package.json" of {package}@version
             client = new WebClient();
-            data = client.OpenRead(@"https://registry.npmjs.org/" + NPM_PACKAGE + "/" + version);
+            data = client.OpenRead(@"https://registry.npmjs.org/" + package + "/" + version);
             reader = new StreamReader(data);
             libraryJsonString = reader.ReadToEnd();
             data.Close();
@@ -112,15 +140,15 @@ namespace DCL.Protobuf
             libraryInfo = JsonConvert.DeserializeObject<Dictionary<string, object>>(libraryContent["dist"].ToString());
 
             string tgzUrl = libraryInfo["tarball"].ToString();
-            VerboseLog(NPM_PACKAGE + "@" + version + "url: " + tgzUrl);
+            VerboseLog(package + "@" + version + "url: " + tgzUrl);
 
             // Download package
-            string packageName = NPM_PACKAGE + "-" + version + ".tgz";
+            string packageName = package + "-" + version + ".tgz";
             client = new WebClient();
             client.DownloadFile(tgzUrl, packageName);
             VerboseLog("File downloaded " + packageName);
 
-            string destPackage = NPM_PACKAGE + "-" + version;
+            string destPackage = package + "-" + version;
             if (Directory.Exists(destPackage))
                 Directory.Delete(destPackage, true);
 
@@ -128,9 +156,36 @@ namespace DCL.Protobuf
             {
                 Directory.CreateDirectory(destPackage);
 
-                Untar(packageName,destPackage);
+                Untar(packageName, destPackage);
                 VerboseLog("Untar " + packageName);
+            }
+            catch (Exception e)
+            {
+                Directory.Delete(destPackage, true);
+                if (File.Exists(packageName))
+                    File.Delete(packageName);
+                Debug.LogError("The download has failed " + e.Message);
+                throw e; // Rethrow
+            }
 
+            return (packageName, destPackage);
+        }
+
+        public static void DownloadProtoDefinitions(string version)
+        {
+            string packageName;
+            string destPackage;
+            try
+            {
+                (packageName, destPackage) = DownloadNPMPackage(NPM_PACKAGE, version);
+            }
+            catch
+            {
+                return; // On error on DownloadNPMPackage we stop.
+            }
+
+            try
+            {
                 if (File.Exists(destPackage + NPM_PACKAGE_PROTO_DEF + "/" + PATHNAME_TO_COMPONENTS_DEFINITIONS_COMMON + "/id.proto"))
                 {
                     File.Delete(destPackage + NPM_PACKAGE_PROTO_DEF + "/" + PATHNAME_TO_COMPONENTS_DEFINITIONS_COMMON + "/id.proto");
@@ -145,18 +200,15 @@ namespace DCL.Protobuf
                 Directory.Move(destPackage + NPM_PACKAGE_PROTO_DEF, componentDefinitionPath);
 
                 VerboseLog("Success copying definitions in " + componentDefinitionPath);
-
             }
             catch (Exception e)
             {
                 Debug.LogError("The download has failed " + e.Message);
             }
-            finally // We delete the downloaded package
-            {
-                Directory.Delete(destPackage, true);
-                if (File.Exists(packageName))
-                    File.Delete(packageName);
-            }
+
+            Directory.Delete(destPackage, true);
+            if (File.Exists(packageName))
+                File.Delete(packageName);
         }
 
         private static List<ProtoComponent> GetComponents()
