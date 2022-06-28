@@ -48,7 +48,7 @@ namespace DCL.Protobuf
 
         private const string PROTO_VERSION = "3.12.3";
 
-        private const string NPM_PACKAGE = "decentraland-ecs";
+        private const string ECS_PACKAGE_NAME = "decentraland-ecs";
         private const string NPM_PACKAGE_PROTO_DEF = "/package/dist/ecs7/proto-definitions";
 
         private struct ProtoComponent
@@ -68,7 +68,7 @@ namespace DCL.Protobuf
         [MenuItem("Decentraland/Protobuf/UpdateModels with the latest version")]
         public static void UpdateModels()
         {
-            var lastVersion = GetLatestProtoVersion();
+            var lastVersion = GetLatestPackageVersion(ECS_PACKAGE_NAME);
             UpdateModels(lastVersion);
         }
         
@@ -85,18 +85,21 @@ namespace DCL.Protobuf
         [MenuItem("Decentraland/Protobuf/Download latest proto definitions (For debugging)")]
         public static void DownloadLatestProtoDefinitions()
         {
-            var nextVersion = GetLatestProtoVersion();
+            var nextVersion = GetLatestPackageVersion(ECS_PACKAGE_NAME);
             DownloadProtoDefinitions(nextVersion);
         }
         
-        [MenuItem("Decentraland/Protobuf/Download renderer protocol (For debugging)")]
-        public static void DownloadRendererProtocol()
+        [MenuItem("Decentraland/Protobuf/Download and compile renderer protocol (For debugging)")]
+        public static void DownloadAndCompileRendererProtocol()
         {
             (_, string rendererProtocolPath) = DownloadNPMPackage("@dcl/renderer-protocol", "next");
             (_, string codeGenProtocolPath) = DownloadNPMPackage("protoc-gen-dclunity", "next");
 
-            var protos = GetProtoPaths(rendererProtocolPath);
-            Debug.Log(protos.ToString());
+            Debug.Log(rendererProtocolPath);
+            CompileRendererProtocol(rendererProtocolPath, codeGenProtocolPath);
+            
+            Directory.Delete(rendererProtocolPath, true);
+            Directory.Delete(codeGenProtocolPath, true);
         }
 
         public static List<string> GetProtoPaths(string basePath)
@@ -125,6 +128,11 @@ namespace DCL.Protobuf
             string libraryJsonString;
             Dictionary<string, object> libraryContent, libraryInfo;
 
+            if (version == "next")
+            {
+                version = GetLatestPackageVersion(package);
+            }
+
             VerboseLog("Downloading " + package + " version: " + version);
 
             // Download the "package.json" of {package}@version
@@ -142,13 +150,15 @@ namespace DCL.Protobuf
             string tgzUrl = libraryInfo["tarball"].ToString();
             VerboseLog(package + "@" + version + "url: " + tgzUrl);
 
+            string packageWithoutSlash = package.Replace("/", "-");
             // Download package
-            string packageName = package + "-" + version + ".tgz";
+            string packageName = packageWithoutSlash + "-" + version + ".tgz";
+
             client = new WebClient();
             client.DownloadFile(tgzUrl, packageName);
             VerboseLog("File downloaded " + packageName);
 
-            string destPackage = package + "-" + version;
+            string destPackage = packageWithoutSlash + "-" + version;
             if (Directory.Exists(destPackage))
                 Directory.Delete(destPackage, true);
 
@@ -177,7 +187,7 @@ namespace DCL.Protobuf
             string destPackage;
             try
             {
-                (packageName, destPackage) = DownloadNPMPackage(NPM_PACKAGE, version);
+                (packageName, destPackage) = DownloadNPMPackage(ECS_PACKAGE_NAME, version);
             }
             catch
             {
@@ -388,6 +398,31 @@ namespace DCL.Protobuf
             return ExecProtoCompilerCommand(string.Join(" ", paramsArray));
         }
         
+        private static bool CompileRendererProtocol(string rendererProtoPath, string codeGenPath)
+        {
+            List<string> commonFiles = GetProtoPaths(rendererProtoPath);
+
+            if (commonFiles.Count == 0)
+                return true;
+
+            string filePath = Application.dataPath;
+
+            string outputPath = PATH_TO_GENERATED + "RendererProtocol/";
+
+            List<string> paramsArray = new List<string>
+            {
+                $"--csharp_out \"{outputPath}\"", 
+                $"--proto_path \"{rendererProtoPath}\""
+            };
+            
+            foreach(string protoFile in commonFiles)
+            {
+                paramsArray.Add($"\"{filePath}/{protoFile}\""); 
+            }
+            
+            return ExecProtoCompilerCommand(string.Join(" ", paramsArray));
+        }
+        
         private static bool ExecProtoCompilerCommand(string finalArguments)
         {
             string proto_path = GetPathToProto();
@@ -488,7 +523,7 @@ namespace DCL.Protobuf
             return GetVersion(path);
         }
         
-        public static string GetLatestProtoVersion()
+        public static string GetLatestPackageVersion(string packageName)
         {
             WebClient client;
             Stream data;
@@ -496,9 +531,9 @@ namespace DCL.Protobuf
             string libraryJsonString;
             Dictionary<string, object> libraryContent, libraryInfo;
 
-            // Download the data of decentraland-/ecs
+            // Download the data of the package
             client = new WebClient();
-            data = client.OpenRead(@"https://registry.npmjs.org/" + NPM_PACKAGE);
+            data = client.OpenRead(@"https://registry.npmjs.org/" + packageName);
             if (data == null)
             {
                 return "";
