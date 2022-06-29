@@ -92,14 +92,27 @@ namespace DCL.Protobuf
         [MenuItem("Decentraland/Protobuf/Download and compile renderer protocol (For debugging)")]
         public static void DownloadAndCompileRendererProtocol()
         {
-            (_, string rendererProtocolPath) = DownloadNPMPackage("@dcl/renderer-protocol", "next");
-            (_, string codeGenProtocolPath) = DownloadNPMPackage("protoc-gen-dclunity", "next");
+            // Download NPM Packages
+            (string dclProtoPackagePath, string decentralandProtocolPath, string version) = DownloadNPMPackage("@dcl/protocol", "next");
+            (string codeGenPackagePath, string codeGenProtocolPath, _) = DownloadNPMPackage("protoc-gen-dclunity", "next");
 
-            Debug.Log(rendererProtocolPath);
-            CompileRendererProtocol(rendererProtocolPath, codeGenProtocolPath);
-            
-            Directory.Delete(rendererProtocolPath, true);
+            // Prepare paths
+            Debug.Log("decentralandProtocolPath " + decentralandProtocolPath);
+            var rendererProtocolPath = decentralandProtocolPath + "/package/renderer-protocol/";
+            string generatedCodePath = Application.dataPath + "/Scripts/MainScripts/DCL/WorldRuntime/KernelCommunication/RPC/GeneratedCode/";
+            string codeGenIndexJSPath = codeGenProtocolPath + "/package/dist/index.js";
+            if (!Directory.Exists(generatedCodePath))
+                Directory.CreateDirectory(generatedCodePath);
+
+            // Compile renderer protocol
+            CompileRendererProtocol(rendererProtocolPath, codeGenIndexJSPath, generatedCodePath, version);
+
+            // Clean downloaded files
+            return;
+            Directory.Delete(decentralandProtocolPath, true);
             Directory.Delete(codeGenProtocolPath, true);
+            File.Delete(dclProtoPackagePath);
+            File.Delete(codeGenPackagePath);
         }
 
         public static List<string> GetProtoPaths(string basePath)
@@ -120,7 +133,7 @@ namespace DCL.Protobuf
             return res;
         }
 
-        public static (string, string) DownloadNPMPackage(string package, string version)
+        public static (string, string, string) DownloadNPMPackage(string package, string version)
         {
             WebClient client;
             Stream data;
@@ -158,7 +171,7 @@ namespace DCL.Protobuf
             client.DownloadFile(tgzUrl, packageName);
             VerboseLog("File downloaded " + packageName);
 
-            string destPackage = packageWithoutSlash + "-" + version;
+            string destPackage = Application.dataPath + "/" + packageWithoutSlash + "-" + version;
             if (Directory.Exists(destPackage))
                 Directory.Delete(destPackage, true);
 
@@ -178,7 +191,7 @@ namespace DCL.Protobuf
                 throw e; // Rethrow
             }
 
-            return (packageName, destPackage);
+            return (packageName, destPackage, version);
         }
 
         public static void DownloadProtoDefinitions(string version)
@@ -187,7 +200,7 @@ namespace DCL.Protobuf
             string destPackage;
             try
             {
-                (packageName, destPackage) = DownloadNPMPackage(ECS_PACKAGE_NAME, version);
+                (packageName, destPackage, _) = DownloadNPMPackage(ECS_PACKAGE_NAME, version);
             }
             catch
             {
@@ -398,29 +411,30 @@ namespace DCL.Protobuf
             return ExecProtoCompilerCommand(string.Join(" ", paramsArray));
         }
         
-        private static bool CompileRendererProtocol(string rendererProtoPath, string codeGenPath)
+        private static bool CompileRendererProtocol(string rendererProtoPath, string codeGenPath, string outputPath, string version)
         {
             List<string> commonFiles = GetProtoPaths(rendererProtoPath);
 
             if (commonFiles.Count == 0)
                 return true;
 
-            string filePath = Application.dataPath;
-
-            string outputPath = PATH_TO_GENERATED + "RendererProtocol/";
-
             List<string> paramsArray = new List<string>
             {
-                $"--csharp_out \"{outputPath}\"", 
+                $"--csharp_out \"{outputPath}\"",
+                "--csharp_opt=file_extension=.gen.cs",
+                $"--plugin=protoc-gen-dclunity=\"{codeGenPath}\"",
+                $"--dclunity_out \"{outputPath}\"",
                 $"--proto_path \"{rendererProtoPath}\""
             };
             
             foreach(string protoFile in commonFiles)
             {
-                paramsArray.Add($"\"{filePath}/{protoFile}\""); 
+                paramsArray.Add($"\"{protoFile}\""); 
             }
             
-            return ExecProtoCompilerCommand(string.Join(" ", paramsArray));
+            string arguments = string.Join(" ", paramsArray);
+            Debug.Log(arguments);
+            return ExecProtoCompilerCommand(arguments);
         }
         
         private static bool ExecProtoCompilerCommand(string finalArguments)
