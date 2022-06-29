@@ -13,6 +13,7 @@ using Debug = UnityEngine.Debug;
 using Newtonsoft.Json;
 
 using System.IO.Compression;
+using System.Security.AccessControl;
 using UnityEditor.Compilation;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
@@ -101,6 +102,7 @@ namespace DCL.Protobuf
             var rendererProtocolPath = decentralandProtocolPath + "/package/renderer-protocol/";
             string generatedCodePath = Application.dataPath + "/Scripts/MainScripts/DCL/WorldRuntime/KernelCommunication/RPC/GeneratedCode/";
             string codeGenIndexJSPath = codeGenProtocolPath + "/package/dist/index.js";
+            AddExecutablePermisson(codeGenIndexJSPath);
             if (!Directory.Exists(generatedCodePath))
                 Directory.CreateDirectory(generatedCodePath);
 
@@ -422,7 +424,7 @@ namespace DCL.Protobuf
             {
                 $"--csharp_out \"{outputPath}\"",
                 "--csharp_opt=file_extension=.gen.cs",
-                $"--plugin=protoc-gen-dclunity=\"{codeGenPath}\"",
+                $"--plugin=protoc-gen-dclunity={codeGenPath}",
                 $"--dclunity_out \"{outputPath}\"",
                 $"--proto_path \"{rendererProtoPath}\""
             };
@@ -631,6 +633,7 @@ namespace DCL.Protobuf
 
         private static string GetPathToProto()
         {
+            Debug.Log(Application.dataPath);
             return Application.dataPath + PATH_TO_PROTO + PROTO_FILENAME;
         }
         
@@ -638,7 +641,7 @@ namespace DCL.Protobuf
         private static bool AddExecutablePermisson(string path)
         {
             // This is the console to convert the proto
-            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = "chmod", Arguments = $"+x \"${path}\"" };
+            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = "chmod", Arguments = $"+x \"{path}\"" };
             
             Process proc = new Process() { StartInfo = startInfo };
             proc.StartInfo.UseShellExecute = false;
