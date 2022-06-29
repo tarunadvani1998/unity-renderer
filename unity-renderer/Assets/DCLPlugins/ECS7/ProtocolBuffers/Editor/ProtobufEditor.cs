@@ -110,7 +110,6 @@ namespace DCL.Protobuf
             CompileRendererProtocol(rendererProtocolPath, codeGenIndexJSPath, generatedCodePath, version);
 
             // Clean downloaded files
-            return;
             Directory.Delete(decentralandProtocolPath, true);
             Directory.Delete(codeGenProtocolPath, true);
             File.Delete(dclProtoPackagePath);
@@ -442,10 +441,10 @@ namespace DCL.Protobuf
         private static bool ExecProtoCompilerCommand(string finalArguments)
         {
             string proto_path = GetPathToProto();
-            
+
             // This is the console to convert the proto
             ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = proto_path, Arguments = finalArguments };
-            
+
             Process proc = new Process() { StartInfo = startInfo };
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.RedirectStandardOutput = true;
