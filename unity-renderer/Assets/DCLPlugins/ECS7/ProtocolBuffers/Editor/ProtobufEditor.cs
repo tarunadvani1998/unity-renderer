@@ -437,13 +437,48 @@ namespace DCL.Protobuf
             Debug.Log(arguments);
             return ExecProtoCompilerCommand(arguments);
         }
+
+        private static Dictionary<string, string> GetEnv()
+        {
+            // This is the console to convert the proto
+            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = "env" };
+
+            Process proc = new Process() { StartInfo = startInfo };
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.RedirectStandardError = true;
+            proc.Start();
+            
+            string error = proc.StandardError.ReadToEnd();
+            proc.WaitForExit();
+            string output = proc.StandardOutput.ReadToEnd();
+            var result = new Dictionary<string, string>();
+            foreach (var line in output.Split('\n'))
+            {
+                Debug.Log(line);
+                var keyAndValue = line.Split('=');
+                if (keyAndValue.Length == 2)
+                {
+                    var key = keyAndValue[0];
+                    var value = keyAndValue[1];
+                    result.Add(key, value);
+                }
+            }
+            return result;
+        }
         
         private static bool ExecProtoCompilerCommand(string finalArguments)
         {
             string proto_path = GetPathToProto();
 
+            var env = GetEnv(); // Should get system env variables 
+
             // This is the console to convert the proto
             ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = proto_path, Arguments = finalArguments };
+            foreach (var item in env)
+            {
+                startInfo.Environment[item.Key] = item.Value;
+            }
 
             Process proc = new Process() { StartInfo = startInfo };
             proc.StartInfo.UseShellExecute = false;
