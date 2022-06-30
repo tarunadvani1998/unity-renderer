@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading;
 using AvatarSystem;
 using Cysharp.Threading.Tasks;
@@ -79,6 +80,8 @@ namespace Test.AvatarSystem
             curator.Received().Curate(settings, wearableIds, Arg.Any<CancellationToken>());
             loader.DidNotReceiveWithAnyArgs()
                   .Load(default, default, default, default, default, default, default);
+            
+            LogAssert.Expect(LogType.Error, new Regex("^.*?Avatar.Load failed"));
         });
 
         [UnityTest]
