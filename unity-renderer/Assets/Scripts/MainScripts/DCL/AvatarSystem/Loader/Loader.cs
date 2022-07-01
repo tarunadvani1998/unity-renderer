@@ -40,23 +40,32 @@ namespace AvatarSystem
             List<IWearableLoader> toCleanUp = new List<IWearableLoader>();
             try
             {
+                Debug.Log(("pato: load avatar start"));
                 status = ILoader.Status.Loading;
                 await LoadBodyshape(settings, bodyshape, eyes, eyebrows, mouth, toCleanUp, ct);
+                Debug.Log(("pato: LoadBodyshape done"));
                 await LoadWearables(wearables, settings, toCleanUp, ct);
+                Debug.Log(("pato: LoadWearables done"));
                 SkinnedMeshRenderer skinnedContainer = bonesContainer == null ? bodyshapeLoader.upperBodyRenderer : bonesContainer;
                 // Update Status accordingly
                 status = ComposeStatus(loaders);
+                Debug.Log(("pato: ComposeStatus done"));
                 if (status == ILoader.Status.Failed_Major)
                     throw new Exception($"Couldnt load (nor fallback) wearables with required category: {string.Join(", ", ConstructRequiredFailedWearablesList(loaders.Values))}");
 
                 AvatarSystemUtils.CopyBones(skinnedContainer, loaders.Values.SelectMany(x => x.rendereable.renderers).OfType<SkinnedMeshRenderer>());
-
+                Debug.Log(("pato: CopyBones done"));
                 if (bodyshapeLoader.rendereable != null)
+                {
+                    Debug.Log(("pato: try CopyBones2"));
                     AvatarSystemUtils.CopyBones(skinnedContainer, bodyshapeLoader.rendereable.renderers.OfType<SkinnedMeshRenderer>());
+                    Debug.Log(("pato: CopyBones done"));
+                }
 
                 (bool headVisible, bool upperBodyVisible, bool lowerBodyVisible, bool feetVisible) = AvatarSystemUtils.GetActiveBodyParts(settings.bodyshapeId, wearables);
-
+                Debug.Log(("pato: GetActiveBodyParts done"));
                 combinedRenderer = await MergeAvatar(settings, wearables, headVisible, upperBodyVisible, lowerBodyVisible, feetVisible, bonesContainer, ct);
+                Debug.Log(("pato: MergeAvatar done"));
                 facialFeaturesRenderers = new List<Renderer>();
                 if (headVisible)
                 {
@@ -69,12 +78,17 @@ namespace AvatarSystem
                 }
                 else
                 {
-                    if(bodyshapeLoader != null)
+                    if (bodyshapeLoader != null)
+                    {
+                        Debug.Log(("pato: try DisableFacialRenderers"));
                         bodyshapeLoader.DisableFacialRenderers();
+                        Debug.Log(("pato: DisableFacialRenderers done"));
+                    }
                 }
             }
             catch (OperationCanceledException)
             {
+                Debug.Log(("pato: load avatar cancelled"));
                 Dispose();
                 throw;
             }
@@ -160,7 +174,10 @@ namespace AvatarSystem
             return (notReusableLoaders, newLoaders);
         }
 
-        public Transform[] GetBones() { return bodyshapeLoader?.upperBodyRenderer?.bones; }
+        public Transform[] GetBones()
+        {
+            return bodyshapeLoader?.upperBodyRenderer?.bones;
+        }
 
         public bool IsValidForBodyShape(WearableItem bodyshape, WearableItem eyes, WearableItem eyebrows, WearableItem mouth)
         {
