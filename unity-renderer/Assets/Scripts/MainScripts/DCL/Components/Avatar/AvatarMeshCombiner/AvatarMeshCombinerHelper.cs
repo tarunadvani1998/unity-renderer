@@ -20,7 +20,7 @@ namespace DCL
         public bool Combine(SkinnedMeshRenderer bonesContainer, SkinnedMeshRenderer[] renderersToCombine, bool keepPose = true);
         public bool Combine(SkinnedMeshRenderer bonesContainer, SkinnedMeshRenderer[] renderersToCombine, Material materialAsset, bool keepPose = true);
     }
-    
+
     /// <summary>
     /// AvatarMeshCombinerHelper uses the AvatarMeshCombiner utility class to combine many skinned renderers
     /// into a single one.
@@ -43,8 +43,8 @@ namespace DCL
 
         private AvatarMeshCombiner.Output? lastOutput;
 
-        public AvatarMeshCombinerHelper (GameObject container = null) 
-        { 
+        public AvatarMeshCombinerHelper(GameObject container = null)
+        {
             this.container = container;
         }
 
@@ -59,7 +59,13 @@ namespace DCL
         /// </summary>
         /// <param name="bonesContainer">A SkinnedMeshRenderer that must contain the bones and bindposes that will be used by the combined avatar.</param>
         /// <param name="renderersToCombine">A list of avatar parts to be combined</param>
-        public bool Combine(SkinnedMeshRenderer bonesContainer, SkinnedMeshRenderer[] renderersToCombine, bool keepPose = true) { return Combine(bonesContainer, renderersToCombine, Resources.Load<Material>("Avatar Material"), keepPose); }
+        public bool Combine(SkinnedMeshRenderer bonesContainer, SkinnedMeshRenderer[] renderersToCombine, bool keepPose = true)
+        {
+            Debug.Log("CombineA A");
+            var material = Resources.Load<Material>("Avatar Material");
+            Debug.Log("CombineA B");
+            return Combine(bonesContainer, renderersToCombine, material, keepPose);
+        }
 
         /// <summary>
         /// Combine will use AvatarMeshCombiner to generate a combined avatar mesh.
@@ -74,16 +80,19 @@ namespace DCL
         /// <returns>true if succeeded, false if not</returns>
         public bool Combine(SkinnedMeshRenderer bonesContainer, SkinnedMeshRenderer[] renderersToCombine, Material materialAsset, bool keepPose)
         {
-            Assert.IsTrue(bonesContainer != null, "bonesContainer should never be null!");
-            Assert.IsTrue(renderersToCombine != null, "renderersToCombine should never be null!");
-            Assert.IsTrue(materialAsset != null, "materialAsset should never be null!");
+            if (bonesContainer == null)
+                Debug.Log("bonesContainer should never be null!");
+            if (renderersToCombine == null)
+                Debug.Log("renderersToCombine should never be null!");
+            if (materialAsset == null)
+                Debug.Log("materialAsset should never be null!");
 
             SkinnedMeshRenderer[] renderers = renderersToCombine;
 
             // Sanitize renderers list
-            renderers = renderers.Where( (x) => x != null && x.sharedMesh != null ).ToArray();
+            renderers = renderers.Where((x) => x != null && x.sharedMesh != null).ToArray();
 
-            if ( renderers.Length == 0 )
+            if (renderers.Length == 0)
                 return false;
 
             bool success = CombineInternal(
@@ -93,7 +102,7 @@ namespace DCL
                 keepPose);
 
             // Disable original renderers
-            for ( int i = 0; i < renderers.Length; i++ )
+            for (int i = 0; i < renderers.Length; i++)
             {
                 renderers[i].enabled = false;
             }
@@ -109,7 +118,7 @@ namespace DCL
             Assert.IsTrue(bonesContainer.bones != null, "bonesContainer bones should never be null!");
             Assert.IsTrue(renderers != null, "renderers should never be null!");
             Assert.IsTrue(materialAsset != null, "materialAsset should never be null!");
-            
+
             CombineLayerUtils.ENABLE_CULL_OPAQUE_HEURISTIC = useCullOpaqueHeuristic;
             AvatarMeshCombiner.Output output = AvatarMeshCombiner.CombineSkinnedMeshes(
                 bonesContainer.sharedMesh.bindposes,
@@ -118,17 +127,17 @@ namespace DCL
                 materialAsset,
                 keepPose);
 
-            if ( !output.isValid )
+            if (!output.isValid)
             {
                 logger.LogError("AvatarMeshCombiner", "Combine failed!");
                 return false;
             }
             Transform rootBone = bonesContainer.rootBone;
 
-            if ( container == null )
+            if (container == null)
                 this.container = new GameObject("CombinedAvatar");
 
-            if ( renderer == null )
+            if (renderer == null)
                 renderer = container.AddComponent<SkinnedMeshRenderer>();
 
             UnloadAssets();
@@ -164,7 +173,7 @@ namespace DCL
 
             if (lastOutput.Value.materials != null)
             {
-                foreach ( var material in lastOutput.Value.materials )
+                foreach (var material in lastOutput.Value.materials)
                 {
                     Object.Destroy(material);
                 }

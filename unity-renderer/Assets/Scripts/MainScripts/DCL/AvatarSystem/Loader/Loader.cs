@@ -203,18 +203,21 @@ namespace AvatarSystem
             var featureFlags = DataStore.i.featureFlags.flags.Get();
             avatarMeshCombiner.useCullOpaqueHeuristic = true;
             avatarMeshCombiner.enableCombinedMesh = false;
-            Debug.Log("pato: E");
-            bool success = avatarMeshCombiner.Combine(bonesContainer, allRenderers.ToArray());
-            Debug.Log("pato: F");
+            Debug.Log($"pato: E {allRenderers != null}");
+            var renderers = allRenderers.ToArray();
+            Debug.Log($"pato: F {renderers != null}");
+
+            bool success = avatarMeshCombiner.Combine(bonesContainer, renderers);
+            Debug.Log("pato: G");
             if (!success)
             {
                 status = ILoader.Status.Failed_Major;
                 throw new Exception("Couldnt merge avatar");
             }
             avatarMeshCombiner.container.transform.SetParent(container.transform, true);
-            Debug.Log("pato: G");
-            avatarMeshCombiner.container.transform.localPosition = Vector3.zero;
             Debug.Log("pato: H");
+            avatarMeshCombiner.container.transform.localPosition = Vector3.zero;
+            Debug.Log("pato: I");
             return avatarMeshCombiner.renderer;
         }
 
