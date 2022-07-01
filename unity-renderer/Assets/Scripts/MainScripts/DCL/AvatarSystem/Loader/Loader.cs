@@ -92,10 +92,10 @@ namespace AvatarSystem
                 Dispose();
                 throw;
             }
-            catch
+            catch (Exception e)
             {
                 Dispose();
-                Debug.Log("Failed Loading avatar");
+                Debug.Log($"Failed Loading avatar {e}");
                 throw;
             }
             finally
@@ -188,24 +188,33 @@ namespace AvatarSystem
             bool headVisible, bool upperBodyVisible, bool lowerBodyVisible, bool feetVisible, SkinnedMeshRenderer bonesContainer,
             CancellationToken ct)
         {
+            Debug.Log("pato: A");
             var activeBodyParts = AvatarSystemUtils.GetActiveBodyPartsRenderers(bodyshapeLoader, headVisible, upperBodyVisible, lowerBodyVisible, feetVisible);
+            Debug.Log("pato: B");
+
             IEnumerable<SkinnedMeshRenderer> allRenderers = activeBodyParts.Union(loaders.Values.SelectMany(x => x.rendereable.renderers.OfType<SkinnedMeshRenderer>()));
+            Debug.Log("pato: C");
 
             // AvatarMeshCombiner is a bit buggy when performing the combine of the same meshes on the same frame,
             // once that's fixed we can remove this wait
             // AttachExternalCancellation is needed because cancellation will take a wait to trigger
             await UniTask.WaitForEndOfFrame(ct).AttachExternalCancellation(ct);
+            Debug.Log("pato: D");
             var featureFlags = DataStore.i.featureFlags.flags.Get();
             avatarMeshCombiner.useCullOpaqueHeuristic = true;
             avatarMeshCombiner.enableCombinedMesh = false;
+            Debug.Log("pato: E");
             bool success = avatarMeshCombiner.Combine(bonesContainer, allRenderers.ToArray());
+            Debug.Log("pato: F");
             if (!success)
             {
                 status = ILoader.Status.Failed_Major;
                 throw new Exception("Couldnt merge avatar");
             }
             avatarMeshCombiner.container.transform.SetParent(container.transform, true);
+            Debug.Log("pato: G");
             avatarMeshCombiner.container.transform.localPosition = Vector3.zero;
+            Debug.Log("pato: H");
             return avatarMeshCombiner.renderer;
         }
 
