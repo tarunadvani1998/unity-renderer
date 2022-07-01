@@ -89,36 +89,42 @@ namespace DCL
 
             SkinnedMeshRenderer[] renderers = renderersToCombine;
 
+            Debug.Log("CombineB A");
             // Sanitize renderers list
-            renderers = renderers.Where((x) => x != null && x.sharedMesh != null).ToArray();
+            renderers = renderers?.Where((x) => x != null && x.sharedMesh != null).ToArray();
+            Debug.Log("CombineB B");
 
-            if (renderers.Length == 0)
+            if (renderers == null || renderers.Length == 0)
                 return false;
+            Debug.Log("CombineB C");
 
             bool success = CombineInternal(
                 bonesContainer,
                 renderers,
                 materialAsset,
                 keepPose);
+            Debug.Log("CombineB D");
 
             // Disable original renderers
             for (int i = 0; i < renderers.Length; i++)
             {
                 renderers[i].enabled = false;
             }
+            Debug.Log("CombineB E");
 
             return success;
         }
 
         private bool CombineInternal(SkinnedMeshRenderer bonesContainer, SkinnedMeshRenderer[] renderers, Material materialAsset, bool keepPose)
         {
-            Assert.IsTrue(bonesContainer != null, "bonesContainer should never be null!");
-            Assert.IsTrue(bonesContainer.sharedMesh != null, "bonesContainer should never be null!");
-            Assert.IsTrue(bonesContainer.sharedMesh.bindposes != null, "bonesContainer bindPoses should never be null!");
-            Assert.IsTrue(bonesContainer.bones != null, "bonesContainer bones should never be null!");
-            Assert.IsTrue(renderers != null, "renderers should never be null!");
-            Assert.IsTrue(materialAsset != null, "materialAsset should never be null!");
+            if(!(bonesContainer != null)) Debug.Log("bonesContainer should never be null!");
+            if(!(bonesContainer.sharedMesh != null)) Debug.Log("bonesContainer should never be null!");
+            if(!(bonesContainer.sharedMesh.bindposes != null)) Debug.Log( "bonesContainer bindPoses should never be null!");
+            if(!(bonesContainer.bones != null)) Debug.Log("bonesContainer bones should never be null!");
+            if(!(renderers != null)) Debug.Log("renderers should never be null!");
+            if(!(materialAsset != null)) Debug.Log( "materialAsset should never be null!");
 
+            Debug.Log("CombineInternal A");
             CombineLayerUtils.ENABLE_CULL_OPAQUE_HEURISTIC = useCullOpaqueHeuristic;
             AvatarMeshCombiner.Output output = AvatarMeshCombiner.CombineSkinnedMeshes(
                 bonesContainer.sharedMesh.bindposes,
@@ -126,6 +132,7 @@ namespace DCL
                 renderers,
                 materialAsset,
                 keepPose);
+            Debug.Log("CombineInternal B");
 
             if (!output.isValid)
             {
@@ -134,31 +141,47 @@ namespace DCL
             }
             Transform rootBone = bonesContainer.rootBone;
 
+            Debug.Log("CombineInternal C");
+
             if (container == null)
                 this.container = new GameObject("CombinedAvatar");
 
+            Debug.Log("CombineInternal D");
+
             if (renderer == null)
                 renderer = container.AddComponent<SkinnedMeshRenderer>();
+            Debug.Log("CombineInternal E");
 
             UnloadAssets();
             lastOutput = output;
+            Debug.Log("CombineInternal F");
 
             container.layer = bonesContainer.gameObject.layer;
+            Debug.Log("CombineInternal G");
+
             renderer.sharedMesh = output.mesh;
+            Debug.Log("CombineInternal H");
             renderer.bones = bonesContainer.bones;
+            Debug.Log("CombineInternal I");
             renderer.rootBone = rootBone;
+            Debug.Log("CombineInternal J");
             renderer.sharedMaterials = output.materials;
+            Debug.Log("CombineInternal K");
             renderer.quality = SkinQuality.Bone4;
+            Debug.Log("CombineInternal L");
             renderer.updateWhenOffscreen = false;
             renderer.skinnedMotionVectors = false;
             renderer.enabled = enableCombinedMesh;
 
+            Debug.Log("CombineInternal M");
             if (prepareMeshForGpuSkinning)
                 GPUSkinningUtils.EncodeBindPosesIntoMesh(renderer);
 
+            Debug.Log("CombineInternal N");
             if (uploadMeshToGpu)
                 output.mesh.UploadMeshData(true);
 
+            Debug.Log("CombineInternal O");
             logger.Log("AvatarMeshCombiner", "Finish combining avatar. Click here to focus on GameObject.", container);
             return true;
         }
