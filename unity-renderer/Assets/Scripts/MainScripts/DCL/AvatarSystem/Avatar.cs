@@ -93,7 +93,7 @@ namespace AvatarSystem
             catch (Exception e)
             {
                 Dispose();
-                Debug.LogError($"Avatar.Load failed with wearables:[{string.Join(",", wearablesIds)}] for bodyshape:{settings.bodyshapeId} and player {settings.playerName}");
+                Debug.Log($"Avatar.Load failed with wearables:[{string.Join(",", wearablesIds)}] for bodyshape:{settings.bodyshapeId} and player {settings.playerName}");
                 if (e.InnerException != null)
                     ExceptionDispatchInfo.Capture(e.InnerException).Throw();
                 else
