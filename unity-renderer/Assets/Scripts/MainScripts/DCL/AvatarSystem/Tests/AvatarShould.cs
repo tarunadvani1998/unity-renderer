@@ -80,8 +80,6 @@ namespace Test.AvatarSystem
             curator.Received().Curate(settings, wearableIds, Arg.Any<CancellationToken>());
             loader.DidNotReceiveWithAnyArgs()
                   .Load(default, default, default, default, default, default, default);
-            
-            LogAssert.Expect(LogType.Error, new Regex("^.*?Avatar.Load failed"));
         });
 
         [UnityTest]
