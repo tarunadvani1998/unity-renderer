@@ -19,7 +19,7 @@
         "com.unity.mathematics": "1.2.6",
         "com.unity.burst": "1.6.6"
       },
-      "hash": "7806885e628d2e1e7b64c62a7d1d155945638dad"
+      "hash": "a8296a114aa1af55fe587116871c8fee364ba44f"
     },
     "com.coffee.ui-particle": {
       "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#3.3.0",
